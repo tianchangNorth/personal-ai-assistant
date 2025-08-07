@@ -1,0 +1,8 @@
+# 此文件用于保持models目录在git中被跟踪
+# AI模型文件会被.gitignore忽略（通常很大），但目录结构需要保留
+# 
+# 模型文件下载说明：
+# 1. BGE中文向量模型: https://huggingface.co/BAAI/bge-small-zh-v1.5
+# 2. Qwen语言模型: https://huggingface.co/Qwen/Qwen-0.5B-Chat
+# 
+# 请将下载的模型文件放置在对应的子目录中

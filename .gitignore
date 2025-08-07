@@ -1,0 +1,252 @@
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+*.lcov
+
+# nyc test coverage
+.nyc_output
+
+# Grunt intermediate storage (https://gruntjs.com/creating-plugins#storing-task-files)
+.grunt
+
+# Bower dependency directory (https://bower.io/)
+bower_components
+
+# node-waf configuration
+.lock-wscript
+
+# Compiled binary addons (https://nodejs.org/api/addons.html)
+build/Release
+
+# Dependency directories
+node_modules/
+jspm_packages/
+
+# Snowpack dependency directory (https://snowpack.dev/)
+web_modules/
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Optional stylelint cache
+.stylelintcache
+
+# Microbundle cache
+.rpt2_cache/
+.rts2_cache_cjs/
+.rts2_cache_es/
+.rts2_cache_umd/
+
+# Optional REPL history
+.node_repl_history
+
+# Output of 'npm pack'
+*.tgz
+
+# Yarn Integrity file
+.yarn-integrity
+
+# dotenv environment variable files
+.env
+.env.development.local
+.env.test.local
+.env.production.local
+.env.local
+
+# parcel-bundler cache (https://parceljs.org/)
+.cache
+.parcel-cache
+
+# Next.js build output
+.next
+out
+
+# Nuxt.js build / generate output
+.nuxt
+dist
+
+# Gatsby files
+.cache/
+# Comment in the public line in if your project uses Gatsby and not Next.js
+# https://nextjs.org/blog/next-9-1#public-directory-support
+# public
+
+# vuepress build output
+.vuepress/dist
+
+# vuepress v2.x temp and cache directory
+.temp
+.cache
+
+# Docusaurus cache and generated files
+.docusaurus
+
+# Serverless directories
+.serverless/
+
+# FuseBox cache
+.fusebox/
+
+# DynamoDB Local files
+.dynamodb/
+
+# TernJS port file
+.tern-port
+
+# Stores VSCode versions used for testing VSCode extensions
+.vscode-test
+
+# yarn v2
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+.pnp.*
+
+# 项目特定文件
+# 数据库文件
+data/database/*.db
+data/database/*.db-journal
+data/database/*.db-wal
+data/database/*.db-shm
+
+# 上传的文件
+uploads/*
+!uploads/.gitkeep
+
+# 日志文件
+logs/*.log
+logs/*.log.*
+*.log
+
+# 临时文件
+temp/
+tmp/
+.tmp/
+
+# AI模型文件（通常很大）
+models/*.bin
+models/*.gguf
+models/*.safetensors
+models/*.pt
+models/*.pth
+models/*.onnx
+
+# 向量索引文件
+data/vectors/*
+!data/vectors/.gitkeep
+
+# FAISS索引文件
+*.faiss
+*.index
+
+# 测试生成的文件
+tests/uploads/*
+tests/testData/*
+tests/temp/*
+!tests/uploads/.gitkeep
+!tests/testData/.gitkeep
+!tests/temp/.gitkeep
+
+# 覆盖率报告
+coverage/
+.nyc_output/
+
+# IDE和编辑器
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# 操作系统
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Windows
+*.lnk
+
+# 备份文件
+*.bak
+*.backup
+*.old
+
+# 压缩文件
+*.zip
+*.tar.gz
+*.rar
+*.7z
+
+# 配置文件（包含敏感信息）
+config/production.json
+config/local.json
+
+# 企业微信配置（敏感信息）
+.wecom-config
+
+# 性能分析文件
+*.cpuprofile
+*.heapprofile
+
+# 构建输出
+build/
+dist/
+out/
+
+# 前端构建文件
+frontend/dist/
+frontend/build/
+frontend/node_modules/
+
+# Docker
+.dockerignore
+docker-compose.override.yml
+
+# 本地开发文件
+.local
+.dev
+
+# 文档生成
+docs/build/
+docs/.vuepress/dist/
+
+# 缓存
+.cache/
+.parcel-cache/
+
+# 锁文件（根据团队偏好选择保留或忽略）
+# package-lock.json
+# yarn.lock
+
+# 测试数据库
+test.db
+test.db-journal
+
+# 开发时的临时文件
+scratch/
+playground/
+experiments/

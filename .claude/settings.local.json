@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:huggingface.co)",
+      "Bash(npm run download-model)",
+      "Bash(npm run download-model-simple)",
+      "Bash(node download-model-simple.js)",
+      "Bash(npm run check-all-models:*)",
+      "Bash(sqlite3:*)",
+      "Bash(node:*)",
+      "Bash(rm:*)"
+    ],
+    "deny": []
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "name": "wecombot",
+  "version": "1.0.0",
+  "description": "企业微信RAG智能问答机器人",
+  "main": "src/app.js",
+  "scripts": {
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "build": "npm run build:frontend",
+    "build:frontend": "cd frontend && npm run build",
+    "download-model": "node download-model.js",
+    "download-model-simple": "node download-model-simple.js",
+    "download-backup": "node download-model-simple.js backup",
+    "check-model": "node download-model.js check",
+    "check-all-models": "node download-model-simple.js check",
+    "setup": "npm install && npm run download-model-simple"
+  },
+  "keywords": [
+    "wecom",
+    "rag",
+    "chatbot",
+    "ai",
+    "document-processing"
+  ],
+  "author": "WeComBot Team",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "helmet": "^7.1.0",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.5-lts.1",
+    "pdf-parse": "^1.1.1",
+    "mammoth": "^1.6.0",
+    "markdown-it": "^14.0.0",
+    "sqlite3": "^5.1.6",
+
+    "axios": "^1.6.2",
+    "@xenova/transformers": "^2.17.1",
+    "faiss-node": "^0.5.1",
+    "crypto": "^1.0.1",
+    "xml2js": "^0.6.2",
+    "dotenv": "^16.3.1",
+    "joi": "^17.11.0",
+    "winston": "^3.11.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2",
+    "jest": "^29.7.0",
+    "supertest": "^6.3.3",
+    "@types/jest": "^29.5.8"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  }
+}
