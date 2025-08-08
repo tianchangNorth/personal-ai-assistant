@@ -1,0 +1,285 @@
+{
+  "_type": "export",
+  "__export_format": 4,
+  "__export_date": "2024-06-08T12:00:00.000Z",
+  "__export_source": "insomnia.desktop.app:v2024.2.0",
+  "resources": [
+    {
+      "_id": "wrk_WeComBot",
+      "name": "WeComBot API",
+      "_type": "workspace"
+    },
+    {
+      "_id": "env_WeComBot",
+      "parentId": "wrk_WeComBot",
+      "_type": "environment",
+      "name": "Base Environment",
+      "data": {
+        "base_url": "http://localhost:3000"
+      }
+    },
+    {
+      "_id": "fld_documents",
+      "parentId": "wrk_WeComBot",
+      "name": "文档管理",
+      "_type": "request_group"
+    },
+    {
+      "_id": "req_upload",
+      "parentId": "fld_documents",
+      "name": "上传文档",
+      "_type": "request",
+      "method": "POST",
+      "url": "{{ base_url }}/api/documents/upload",
+      "body": {
+        "mimeType": "multipart/form-data",
+        "params": [
+          { "name": "document", "type": "file", "fileName": "company-rules.pdf" },
+          { "name": "description", "value": "公司规章制度" }
+        ]
+      }
+    },
+    {
+      "_id": "req_list",
+      "parentId": "fld_documents",
+      "name": "获取文档列表",
+      "_type": "request",
+      "method": "GET",
+      "url": "{{ base_url }}/api/documents?status=completed&page=1&limit=10"
+    },
+    {
+      "_id": "req_detail",
+      "parentId": "fld_documents",
+      "name": "获取文档详情",
+      "_type": "request",
+      "method": "GET",
+      "url": "{{ base_url }}/api/documents/123"
+    },
+    {
+      "_id": "req_chunk",
+      "parentId": "fld_documents",
+      "name": "获取文档块内容",
+      "_type": "request",
+      "method": "GET",
+      "url": "{{ base_url }}/api/documents/123/chunks/456"
+    },
+    {
+      "_id": "req_search",
+      "parentId": "fld_documents",
+      "name": "搜索文档",
+      "_type": "request",
+      "method": "GET",
+      "url": "{{ base_url }}/api/documents/search?q=规章制度&page=1&limit=5"
+    },
+    {
+      "_id": "req_stats",
+      "parentId": "fld_documents",
+      "name": "获取文档统计",
+      "_type": "request",
+      "method": "GET",
+      "url": "{{ base_url }}/api/documents/statistics"
+    },
+    {
+      "_id": "req_reprocess",
+      "parentId": "fld_documents",
+      "name": "重新处理文档",
+      "_type": "request",
+      "method": "POST",
+      "url": "{{ base_url }}/api/documents/123/reprocess"
+    },
+    {
+      "_id": "req_delete",
+      "parentId": "fld_documents",
+      "name": "删除文档",
+      "_type": "request",
+      "method": "DELETE",
+      "url": "{{ base_url }}/api/documents/123"
+    },
+    {
+      "_id": "fld_search",
+      "parentId": "wrk_WeComBot",
+      "name": "语义搜索",
+      "_type": "request_group"
+    },
+    {
+      "_id": "req_semantic",
+      "parentId": "fld_search",
+      "name": "语义搜索",
+      "_type": "request",
+      "method": "POST",
+      "url": "{{ base_url }}/api/search/semantic",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"query\": \"工作时间是什么时候\",\n  \"topK\": 5,\n  \"threshold\": 0.3,\n  \"includeContent\": true\n}"
+      }
+    },
+    {
+      "_id": "req_build_index",
+      "parentId": "fld_search",
+      "name": "构建向量索引",
+      "_type": "request",
+      "method": "POST",
+      "url": "{{ base_url }}/api/search/build-index"
+    },
+    {
+      "_id": "req_rebuild_index",
+      "parentId": "fld_search",
+      "name": "重建向量索引",
+      "_type": "request",
+      "method": "POST",
+      "url": "{{ base_url }}/api/search/rebuild-index"
+    },
+    {
+      "_id": "req_vectorize",
+      "parentId": "fld_search",
+      "name": "文本向量化",
+      "_type": "request",
+      "method": "POST",
+      "url": "{{ base_url }}/api/search/vectorize",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"text\": \"这是一个测试文本\"\n}"
+      }
+    },
+    {
+      "_id": "req_similarity",
+      "parentId": "fld_search",
+      "name": "计算向量相似度",
+      "_type": "request",
+      "method": "POST",
+      "url": "{{ base_url }}/api/search/similarity",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"vector1\": [0.1, 0.2, 0.3],\n  \"vector2\": [0.4, 0.5, 0.6]\n}"
+      }
+    },
+    {
+      "_id": "req_search_status",
+      "parentId": "fld_search",
+      "name": "获取向量服务状态",
+      "_type": "request",
+      "method": "GET",
+      "url": "{{ base_url }}/api/search/status"
+    },
+    {
+      "_id": "req_index_stats",
+      "parentId": "fld_search",
+      "name": "获取索引统计信息",
+      "_type": "request",
+      "method": "GET",
+      "url": "{{ base_url }}/api/search/index-stats"
+    },
+    {
+      "_id": "req_search_health",
+      "parentId": "fld_search",
+      "name": "向量服务健康检查",
+      "_type": "request",
+      "method": "GET",
+      "url": "{{ base_url }}/api/search/health"
+    },
+    {
+      "_id": "req_search_init",
+      "parentId": "fld_search",
+      "name": "初始化向量服务",
+      "_type": "request",
+      "method": "POST",
+      "url": "{{ base_url }}/api/search/initialize"
+    },
+    {
+      "_id": "fld_qa",
+      "parentId": "wrk_WeComBot",
+      "name": "RAG问答",
+      "_type": "request_group"
+    },
+    {
+      "_id": "req_qa_ask",
+      "parentId": "fld_qa",
+      "name": "RAG智能问答",
+      "_type": "request",
+      "method": "POST",
+      "url": "{{ base_url }}/api/qa/ask",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"question\": \"企业微信自建应用是什么？\",\n  \"topK\": 5,\n  \"threshold\": 0.3\n}"
+      }
+    },
+    {
+      "_id": "req_qa_batch",
+      "parentId": "fld_qa",
+      "name": "批量问答",
+      "_type": "request",
+      "method": "POST",
+      "url": "{{ base_url }}/api/qa/batch",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"questions\": [\n    \"企业微信自建应用是什么？\",\n    \"如何创建企业微信应用？\"\n  ],\n  \"topK\": 5,\n  \"threshold\": 0.3\n}"
+      }
+    },
+    {
+      "_id": "req_qa_chat",
+      "parentId": "fld_qa",
+      "name": "直接LLM对话",
+      "_type": "request",
+      "method": "POST",
+      "url": "{{ base_url }}/api/qa/chat",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"message\": \"你好，请介绍一下自己\"\n}"
+      }
+    },
+    {
+      "_id": "req_llm_status",
+      "parentId": "fld_qa",
+      "name": "LLM服务状态",
+      "_type": "request",
+      "method": "GET",
+      "url": "{{ base_url }}/api/qa/llm/status"
+    },
+    {
+      "_id": "req_rag_status",
+      "parentId": "fld_qa",
+      "name": "RAG服务状态",
+      "_type": "request",
+      "method": "GET",
+      "url": "{{ base_url }}/api/qa/rag/status"
+    },
+    {
+      "_id": "req_rag_health",
+      "parentId": "fld_qa",
+      "name": "RAG服务健康检查",
+      "_type": "request",
+      "method": "GET",
+      "url": "{{ base_url }}/api/qa/health"
+    },
+    {
+      "_id": "fld_system",
+      "parentId": "wrk_WeComBot",
+      "name": "系统接口",
+      "_type": "request_group"
+    },
+    {
+      "_id": "req_health",
+      "parentId": "fld_system",
+      "name": "健康检查",
+      "_type": "request",
+      "method": "GET",
+      "url": "{{ base_url }}/health"
+    },
+    {
+      "_id": "req_root",
+      "parentId": "fld_system",
+      "name": "API基本信息",
+      "_type": "request",
+      "method": "GET",
+      "url": "{{ base_url }}/"
+    },
+    {
+      "_id": "req_docs",
+      "parentId": "fld_system",
+      "name": "API文档信息",
+      "_type": "request",
+      "method": "GET",
+      "url": "{{ base_url }}/api/docs"
+    }
+  ]
+}

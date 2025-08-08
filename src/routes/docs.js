@@ -223,6 +223,7 @@ router.get('/interactive', async (req, res) => {
             <button class="nav-tab active" onclick="showSection('overview')">概览</button>
             <button class="nav-tab" onclick="showSection('documents')">文档管理</button>
             <button class="nav-tab" onclick="showSection('search')">语义搜索</button>
+            <button class="nav-tab" onclick="showSection('qa')">RAG问答</button>
             <button class="nav-tab" onclick="showSection('testing')">接口测试</button>
         </div>
         
@@ -360,6 +361,87 @@ Character Encoding: UTF-8</pre>
             </div>
         </div>
         
+        <div id="qa" class="content-section">
+            <h2>RAG问答接口</h2>
+
+            <div class="endpoint">
+                <div class="endpoint-header">
+                    <span class="endpoint-method method-post">POST</span>
+                    <span class="endpoint-path">/api/qa/ask</span>
+                </div>
+                <div class="endpoint-body">
+                    <div class="endpoint-description">RAG智能问答 - 基于文档内容的智能问答</div>
+                    <div class="code-block">
+                        <pre>{
+  "question": "企业微信自建应用是什么？",
+  "topK": 5,
+  "threshold": 0.3,
+  "maxTokens": 2048,
+  "temperature": 0.7
+}</pre>
+                    </div>
+                    <button class="try-it-btn" onclick="testRAGAsk()">测试问答</button>
+                </div>
+            </div>
+
+            <div class="endpoint">
+                <div class="endpoint-header">
+                    <span class="endpoint-method method-post">POST</span>
+                    <span class="endpoint-path">/api/qa/batch</span>
+                </div>
+                <div class="endpoint-body">
+                    <div class="endpoint-description">批量问答</div>
+                    <div class="code-block">
+                        <pre>{
+  "questions": [
+    "企业微信自建应用是什么？",
+    "如何创建企业微信应用？"
+  ]
+}</pre>
+                    </div>
+                    <button class="try-it-btn" onclick="testBatchAsk()">测试批量问答</button>
+                </div>
+            </div>
+
+            <div class="endpoint">
+                <div class="endpoint-header">
+                    <span class="endpoint-method method-post">POST</span>
+                    <span class="endpoint-path">/api/qa/chat</span>
+                </div>
+                <div class="endpoint-body">
+                    <div class="endpoint-description">直接LLM对话</div>
+                    <div class="code-block">
+                        <pre>{
+  "message": "你好，请介绍一下企业微信的主要功能"
+}</pre>
+                    </div>
+                    <button class="try-it-btn" onclick="testLLMChat()">测试对话</button>
+                </div>
+            </div>
+
+            <div class="endpoint">
+                <div class="endpoint-header">
+                    <span class="endpoint-method method-get">GET</span>
+                    <span class="endpoint-path">/api/qa/rag/status</span>
+                </div>
+                <div class="endpoint-body">
+                    <div class="endpoint-description">获取RAG服务状态</div>
+                    <button class="try-it-btn" onclick="testRAGStatus()">测试状态</button>
+                </div>
+            </div>
+
+            <div class="endpoint">
+                <div class="endpoint-header">
+                    <span class="endpoint-method method-get">GET</span>
+                    <span class="endpoint-path">/api/qa/health</span>
+                </div>
+                <div class="endpoint-body">
+                    <div class="endpoint-description">RAG服务健康检查</div>
+                    <button class="try-it-btn" onclick="testRAGHealth()">测试健康检查</button>
+                </div>
+            </div>
+        </div>
+
         <div id="testing" class="content-section">
             <h2>接口测试工具</h2>
             <div style="background: #f8f9fa; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
@@ -372,6 +454,10 @@ Character Encoding: UTF-8</pre>
                 <button class="try-it-btn" onclick="testGetDocuments()">获取文档列表</button>
                 <button class="try-it-btn" onclick="testGetStats()">获取统计信息</button>
                 <button class="try-it-btn" onclick="testSearchHealth()">搜索服务状态</button>
+                <button class="try-it-btn" onclick="testRAGAsk()">RAG问答</button>
+                <button class="try-it-btn" onclick="testLLMChat()">LLM对话</button>
+                <button class="try-it-btn" onclick="testRAGStatus()">RAG状态</button>
+                <button class="try-it-btn" onclick="testRAGHealth()">RAG健康检查</button>
             </div>
         </div>
     </div>
@@ -466,6 +552,59 @@ Character Encoding: UTF-8</pre>
             const result = await apiCall('/api/search/health');
             logResult(JSON.stringify(result, null, 2));
         }
+
+        async function testRAGAsk() {
+            logResult('测试RAG智能问答...');
+            const result = await apiCall('/api/qa/ask', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    question: '企业微信自建应用是什么？',
+                    topK: 3,
+                    threshold: 0.3
+                })
+            });
+            logResult(JSON.stringify(result, null, 2));
+        }
+
+        async function testBatchAsk() {
+            logResult('测试批量问答...');
+            const result = await apiCall('/api/qa/batch', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    questions: [
+                        '企业微信自建应用是什么？',
+                        '如何创建企业微信应用？'
+                    ]
+                })
+            });
+            logResult(JSON.stringify(result, null, 2));
+        }
+
+        async function testLLMChat() {
+            logResult('测试LLM直接对话...');
+            const result = await apiCall('/api/qa/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    message: '你好，请简单介绍一下自己'
+                })
+            });
+            logResult(JSON.stringify(result, null, 2));
+        }
+
+        async function testRAGStatus() {
+            logResult('测试RAG服务状态...');
+            const result = await apiCall('/api/qa/rag/status');
+            logResult(JSON.stringify(result, null, 2));
+        }
+
+        async function testRAGHealth() {
+            logResult('测试RAG服务健康检查...');
+            const result = await apiCall('/api/qa/health');
+            logResult(JSON.stringify(result, null, 2));
+        }
         
         async function testUpload() {
             alert('文件上传需要通过文件选择器，请使用其他HTTP客户端工具测试');
@@ -496,6 +635,8 @@ Character Encoding: UTF-8</pre>
         window.addEventListener('load', () => {
             checkServiceStatus();
             testGetStats();
+            // 检查RAG服务状态
+            testRAGStatus();
         });
         
         // 每30秒检查一次服务状态

@@ -10,6 +10,7 @@ const database = require('./models/database');
 const documentRoutes = require('./routes/documents');
 const searchRoutes = require('./routes/search');
 const docsRoutes = require('./routes/docs');
+const qaRoutes = require('./routes/qa');
 
 class App {
   constructor() {
@@ -63,6 +64,7 @@ class App {
     this.app.use('/api/documents', documentRoutes);
     this.app.use('/api/search', searchRoutes);
     this.app.use('/api/docs', docsRoutes);
+    this.app.use('/api/qa', qaRoutes);
 
     // 根路径
     this.app.get('/', (req, res) => {

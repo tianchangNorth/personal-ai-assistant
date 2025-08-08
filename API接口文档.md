@@ -625,6 +625,259 @@ GET /api/documents/search?q=规章制度&page=1&limit=5
 
 ---
 
+## 🤖 RAG问答接口
+
+### RAG智能问答
+
+#### POST /api/qa/ask
+基于文档内容的智能问答，结合语义检索和大语言模型
+
+**请求体**:
+```json
+{
+  "question": "企业微信自建应用是什么？",
+  "topK": 5,
+  "threshold": 0.3,
+  "maxTokens": 2048,
+  "temperature": 0.7,
+  "documentIds": [123, 456]
+}
+```
+
+**参数说明**:
+- **question** (string, required): 用户问题
+- **topK** (number, optional): 检索文档数量，默认5，最大20
+- **threshold** (number, optional): 相似度阈值，默认0.3，范围0-1
+- **maxTokens** (number, optional): 最大生成Token数，默认2048，最大4096
+- **temperature** (number, optional): 生成温度，默认0.7，范围0-2
+- **documentIds** (array, optional): 限制搜索的文档ID列表
+
+**响应示例**:
+```json
+{
+  "success": true,
+  "data": {
+    "question": "企业微信自建应用是什么？",
+    "answer": "企业微信自建应用是企业在企业微信管理后台创建的应用程序，用于满足企业内部的特定业务需求...",
+    "contexts": [
+      {
+        "content": "企业微信自建应用开发指南...",
+        "similarity": 0.8756,
+        "documentName": "wecom-dev-guide.md",
+        "chunkIndex": 3
+      }
+    ],
+    "searchResults": [
+      {
+        "chunkId": 789,
+        "similarity": 0.8756,
+        "documentName": "wecom-dev-guide.md",
+        "content": "企业微信自建应用开发指南..."
+      }
+    ],
+    "metadata": {
+      "searchTime": null,
+      "llmTime": 2179,
+      "totalTime": 2190,
+      "model": "deepseek-coder-v2-lite-instruct",
+      "usage": {
+        "prompt_tokens": 118,
+        "completion_tokens": 36,
+        "total_tokens": 154
+      },
+      "searchCount": 1
+    }
+  }
+}
+```
+
+### 批量问答
+
+#### POST /api/qa/batch
+批量处理多个问题
+
+**请求体**:
+```json
+{
+  "questions": [
+    "企业微信自建应用是什么？",
+    "如何创建企业微信应用？",
+    "企业微信API有哪些限制？"
+  ],
+  "topK": 5,
+  "threshold": 0.3
+}
+```
+
+**参数说明**:
+- **questions** (array, required): 问题列表，最多10个
+- 其他参数同单个问答接口
+
+**响应示例**:
+```json
+{
+  "success": true,
+  "data": {
+    "questions": ["问题1", "问题2", "问题3"],
+    "results": [
+      {
+        "question": "问题1",
+        "answer": "回答1",
+        "contexts": [...],
+        "metadata": {...}
+      }
+    ],
+    "total": 3,
+    "successful": 3,
+    "failed": 0
+  }
+}
+```
+
+### 直接LLM对话
+
+#### POST /api/qa/chat
+直接与LLM对话，不使用RAG检索
+
+**请求体**:
+```json
+{
+  "message": "你好，请介绍一下自己",
+  "maxTokens": 1024,
+  "temperature": 0.7
+}
+```
+
+**参数说明**:
+- **message** (string, required): 对话消息
+- **maxTokens** (number, optional): 最大生成Token数
+- **temperature** (number, optional): 生成温度
+
+**响应示例**:
+```json
+{
+  "success": true,
+  "data": {
+    "message": "你好，请介绍一下自己",
+    "answer": "你好！我是一个AI助手，专门为企业微信相关问题提供帮助...",
+    "metadata": {
+      "model": "deepseek-coder-v2-lite-instruct",
+      "usage": {
+        "prompt_tokens": 15,
+        "completion_tokens": 45,
+        "total_tokens": 60
+      },
+      "responseTime": 1234
+    }
+  }
+}
+```
+
+### LLM服务状态
+
+#### GET /api/qa/llm/status
+获取LM Studio服务状态
+
+**响应示例**:
+```json
+{
+  "success": true,
+  "data": {
+    "status": "running",
+    "isInitialized": true,
+    "baseURL": "http://localhost:1234/v1",
+    "currentModel": "deepseek-coder-v2-lite-instruct",
+    "availableModels": [
+      "deepseek-coder-v2-lite-instruct",
+      "text-embedding-bge-small-zh-v1.5",
+      "text-embedding-nomic-embed-text-v1.5"
+    ],
+    "config": {
+      "maxTokens": 2048,
+      "temperature": 0.7
+    }
+  }
+}
+```
+
+### RAG服务状态
+
+#### GET /api/qa/rag/status
+获取RAG服务整体状态
+
+**响应示例**:
+```json
+{
+  "success": true,
+  "data": {
+    "status": "running",
+    "isInitialized": true,
+    "services": {
+      "llm": {
+        "status": "running",
+        "currentModel": "deepseek-coder-v2-lite-instruct"
+      },
+      "search": {
+        "status": "running",
+        "totalVectors": 57,
+        "dimension": 512
+      }
+    },
+    "config": {
+      "defaultTopK": 5,
+      "defaultThreshold": 0.3
+    }
+  }
+}
+```
+
+### RAG服务健康检查
+
+#### GET /api/qa/health
+检查RAG服务各组件健康状态
+
+**响应示例**:
+```json
+{
+  "success": true,
+  "data": {
+    "healthy": true,
+    "services": {
+      "llm": {
+        "healthy": true,
+        "message": "LM Studio连接正常"
+      },
+      "search": {
+        "healthy": true,
+        "message": "语义搜索服务正常"
+      }
+    }
+  }
+}
+```
+
+**不健康状态响应** (HTTP 503):
+```json
+{
+  "success": false,
+  "data": {
+    "healthy": false,
+    "services": {
+      "llm": {
+        "healthy": false,
+        "message": "LM Studio连接失败: ECONNREFUSED"
+      },
+      "search": {
+        "healthy": true,
+        "message": "语义搜索服务正常"
+      }
+    }
+  }
+}
+```
+
+---
+
 ## 📝 通用响应格式
 
 ### 成功响应
@@ -672,6 +925,19 @@ const response = await fetch('/api/documents/upload', {
   body: formData
 });
 
+// RAG智能问答
+const qaResponse = await fetch('/api/qa/ask', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    question: '企业微信自建应用是什么？',
+    topK: 5,
+    threshold: 0.3
+  })
+});
+
 // 语义搜索
 const searchResponse = await fetch('/api/search/semantic', {
   method: 'POST',
@@ -682,6 +948,17 @@ const searchResponse = await fetch('/api/search/semantic', {
     query: '请假制度是什么',
     topK: 5,
     threshold: 0.3
+  })
+});
+
+// 直接LLM对话
+const chatResponse = await fetch('/api/qa/chat', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    message: '你好，请介绍一下企业微信的主要功能'
   })
 });
 ```
@@ -696,6 +973,28 @@ data = {'description': '公司规章制度'}
 response = requests.post('http://localhost:3000/api/documents/upload',
                         files=files, data=data)
 
+# RAG智能问答
+qa_data = {
+    'question': '企业微信自建应用是什么？',
+    'topK': 5,
+    'threshold': 0.3,
+    'maxTokens': 2048
+}
+qa_response = requests.post('http://localhost:3000/api/qa/ask',
+                           json=qa_data)
+
+# 批量问答
+batch_data = {
+    'questions': [
+        '企业微信自建应用是什么？',
+        '如何创建企业微信应用？',
+        '企业微信API有哪些限制？'
+    ],
+    'topK': 3
+}
+batch_response = requests.post('http://localhost:3000/api/qa/batch',
+                              json=batch_data)
+
 # 语义搜索
 search_data = {
     'query': '请假制度是什么',
@@ -704,6 +1003,14 @@ search_data = {
 }
 search_response = requests.post('http://localhost:3000/api/search/semantic',
                                json=search_data)
+
+# 直接LLM对话
+chat_data = {
+    'message': '你好，请介绍一下企业微信的主要功能',
+    'temperature': 0.7
+}
+chat_response = requests.post('http://localhost:3000/api/qa/chat',
+                             json=chat_data)
 ```
 
 ### cURL
@@ -713,6 +1020,33 @@ curl -X POST http://localhost:3000/api/documents/upload \
   -F "document=@company-rules.pdf" \
   -F "description=公司规章制度"
 
+# RAG智能问答
+curl -X POST http://localhost:3000/api/qa/ask \
+  -H "Content-Type: application/json" \
+  -d '{
+    "question": "企业微信自建应用是什么？",
+    "topK": 5,
+    "threshold": 0.3,
+    "maxTokens": 2048
+  }'
+
+# 批量问答
+curl -X POST http://localhost:3000/api/qa/batch \
+  -H "Content-Type: application/json" \
+  -d '{
+    "questions": [
+      "企业微信自建应用是什么？",
+      "如何创建企业微信应用？"
+    ]
+  }'
+
+# 直接LLM对话
+curl -X POST http://localhost:3000/api/qa/chat \
+  -H "Content-Type: application/json" \
+  -d '{
+    "message": "你好，请介绍一下企业微信的主要功能"
+  }'
+
 # 语义搜索
 curl -X POST http://localhost:3000/api/search/semantic \
   -H "Content-Type: application/json" \
@@ -721,6 +1055,15 @@ curl -X POST http://localhost:3000/api/search/semantic \
     "topK": 5,
     "threshold": 0.3
   }'
+
+# 检查RAG服务状态
+curl http://localhost:3000/api/qa/rag/status
+
+# 检查LLM服务状态
+curl http://localhost:3000/api/qa/llm/status
+
+# RAG健康检查
+curl http://localhost:3000/api/qa/health
 ```
 
 ---
@@ -732,16 +1075,23 @@ curl -X POST http://localhost:3000/api/search/semantic \
 - **文档列表**: < 200ms
 - **语义搜索**: < 500ms
 - **文本向量化**: < 2秒（单文本）
+- **RAG问答**: 2-10秒（取决于LLM模型）
+- **直接LLM对话**: 1-5秒
+- **批量问答**: 10-60秒（取决于问题数量）
 
 ### 并发支持
 - **最大并发连接**: 100
 - **文件上传并发**: 10
 - **搜索请求并发**: 50
+- **RAG问答并发**: 5（受LLM性能限制）
 
 ### 限制说明
 - **文件大小限制**: 10MB
 - **批量向量化**: 最多100个文本
 - **搜索结果数量**: 最多20个
+- **批量问答**: 最多10个问题
+- **问题长度**: 最多1000字符
+- **LLM最大Token**: 4096
 - **API调用频率**: 100次/分钟
 
 ---
