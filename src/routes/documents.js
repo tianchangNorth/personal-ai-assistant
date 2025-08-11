@@ -38,6 +38,13 @@ router.get('/', documentController.getDocuments.bind(documentController));
 router.get('/search', documentController.searchDocuments.bind(documentController));
 
 /**
+ * @route POST /api/documents/rebuild-index
+ * @desc 重建向量索引
+ * @access Public
+ */
+router.post('/rebuild-index', documentController.rebuildIndex.bind(documentController));
+
+/**
  * @route GET /api/documents/statistics
  * @desc 获取文档统计信息
  * @access Public

@@ -10,6 +10,13 @@ class DocumentController {
   constructor() {
     this.parser = new DocumentParser();
     this.splitter = new TextSplitter();
+    
+    // 索引重建管理
+    this.rebuildPending = false;
+    this.rebuildTimer = null;
+    this.rebuildDelay = 5000; // 5秒延迟
+    this.lastRebuildTime = 0;
+    this.minRebuildInterval = 30000; // 最小重建间隔30秒
   }
 
   /**
@@ -89,16 +96,12 @@ class DocumentController {
       // 保存文档块
       await documentModel.saveDocumentChunks(documentId, chunks);
 
-      // 添加到向量索引
+      // 防抖重建向量索引以确保数据一致性
       try {
-        await semanticSearchService.addChunksToIndex(chunks.map(chunk => ({
-          id: documentId, // 临时使用documentId，实际应该是chunk的数据库ID
-          text: chunk.text,
-          metadata: chunk.metadata
-        })));
-        console.log(`文档 ${documentId} 的向量索引已添加`);
+        console.log(`文档 ${documentId} 处理完成，计划重建向量索引...`);
+        await this.scheduleRebuildIndex();
       } catch (vectorError) {
-        console.error(`添加向量索引失败 ${documentId}:`, vectorError);
+        console.error(`调度重建向量索引失败 ${documentId}:`, vectorError);
         // 不影响文档处理流程，继续执行
       }
 
@@ -270,6 +273,101 @@ class DocumentController {
   }
 
   /**
+   * 防抖调度重建向量索引
+   */
+  async scheduleRebuildIndex() {
+    const now = Date.now();
+    
+    // 检查是否在最小重建间隔内
+    if (now - this.lastRebuildTime < this.minRebuildInterval) {
+      const nextAllowedTime = this.lastRebuildTime + this.minRebuildInterval;
+      const delay = Math.max(this.rebuildDelay, nextAllowedTime - now);
+      
+      console.log(`距离上次重建时间过短，将在 ${Math.round(delay/1000)} 秒后重建`);
+      
+      // 清除之前的定时器
+      if (this.rebuildTimer) {
+        clearTimeout(this.rebuildTimer);
+      }
+      
+      // 设置新的定时器
+      return new Promise((resolve) => {
+        this.rebuildTimer = setTimeout(async () => {
+          try {
+            const result = await this.rebuildVectorIndex();
+            resolve(result);
+          } catch (error) {
+            console.error('防抖重建失败:', error);
+            resolve(null);
+          }
+        }, delay);
+      });
+    }
+    
+    // 如果没有等待中的重建任务，立即重建
+    if (!this.rebuildPending) {
+      return this.rebuildVectorIndex();
+    }
+    
+    // 否则设置延迟重建
+    return new Promise((resolve) => {
+      if (this.rebuildTimer) {
+        clearTimeout(this.rebuildTimer);
+      }
+      
+      this.rebuildTimer = setTimeout(async () => {
+        try {
+          const result = await this.rebuildVectorIndex();
+          resolve(result);
+        } catch (error) {
+          console.error('防抖重建失败:', error);
+          resolve(null);
+        }
+      }, this.rebuildDelay);
+    });
+  }
+
+  /**
+   * 重建向量索引
+   */
+  async rebuildVectorIndex() {
+    try {
+      const now = Date.now();
+      
+      // 检查是否正在重建
+      if (this.rebuildPending) {
+        console.log('索引重建正在进行中，跳过本次重建');
+        return { success: true, rebuilt: 0, message: '重建正在进行中' };
+      }
+      
+      // 检查是否在最小重建间隔内
+      if (now - this.lastRebuildTime < this.minRebuildInterval) {
+        console.log(`距离上次重建时间过短，跳过本次重建`);
+        return { success: true, rebuilt: 0, message: '重建间隔过短' };
+      }
+      
+      this.rebuildPending = true;
+      console.log('开始重建向量索引...');
+      
+      // 初始化语义搜索服务
+      await semanticSearchService.initialize();
+      
+      // 重建索引
+      const result = await semanticSearchService.rebuildIndex();
+      
+      this.lastRebuildTime = now;
+      this.rebuildPending = false;
+      
+      console.log(`向量索引重建完成，共重建 ${result.rebuilt} 个向量`);
+      return result;
+    } catch (error) {
+      this.rebuildPending = false;
+      console.error('重建向量索引失败:', error);
+      throw error;
+    }
+  }
+
+  /**
    * 重新处理文档
    */
   async reprocessDocument(req, res) {
@@ -306,6 +404,33 @@ class DocumentController {
       res.status(500).json({
         success: false,
         error: '重新处理文档失败',
+        details: error.message
+      });
+    }
+  }
+
+  /**
+   * 手动重建向量索引
+   */
+  async rebuildIndex(req, res) {
+    try {
+      console.log('收到手动重建向量索引请求');
+      
+      const result = await this.rebuildVectorIndex();
+      
+      res.json({
+        success: true,
+        message: '向量索引重建完成',
+        data: {
+          rebuilt: result.rebuilt,
+          stats: result.stats
+        }
+      });
+    } catch (error) {
+      console.error('手动重建向量索引失败:', error);
+      res.status(500).json({
+        success: false,
+        error: '重建向量索引失败',
         details: error.message
       });
     }
