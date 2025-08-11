@@ -1,5 +1,7 @@
 const llmService = require('./llmService');
+const thirdPartyAPIService = require('./thirdPartyAPIService');
 const semanticSearchService = require('./semanticSearchService');
+const config = require('../config');
 
 /**
  * RAG问答服务 - 检索增强生成
@@ -9,6 +11,8 @@ class RAGService {
     this.isInitialized = false;
     this.defaultTopK = 5;
     this.defaultThreshold = 0.3;
+    this.useThirdPartyAPI = false;
+    this.thirdPartyProvider = null;
   }
 
   /**
@@ -22,17 +26,64 @@ class RAGService {
     try {
       console.log('正在初始化RAG问答服务...');
       
+      // 检查是否使用第三方API
+      await this.checkThirdPartyAPI();
+      
       // 初始化依赖服务
-      await Promise.all([
-        llmService.initialize(),
-        semanticSearchService.initialize()
-      ]);
+      const initPromises = [semanticSearchService.initialize()];
+      
+      if (this.useThirdPartyAPI) {
+        initPromises.push(thirdPartyAPIService.initialize());
+      } else {
+        initPromises.push(llmService.initialize());
+      }
+      
+      await Promise.all(initPromises);
       
       this.isInitialized = true;
       console.log('✅ RAG问答服务初始化完成');
     } catch (error) {
       console.error('❌ RAG问答服务初始化失败:', error);
       throw new Error(`RAG问答服务初始化失败: ${error.message}`);
+    }
+  }
+
+  /**
+   * 检查是否使用第三方API
+   */
+  async checkThirdPartyAPI() {
+    try {
+      // 确保第三方API服务已初始化
+      if (!thirdPartyAPIService.initialized) {
+        await thirdPartyAPIService.initialize();
+      }
+      
+      // 检查是否有可用的第三方API配置
+      const availableProviders = thirdPartyAPIService.getAvailableProviders();
+      
+      if (availableProviders.length > 0) {
+        this.useThirdPartyAPI = true;
+        const defaultProvider = config.thirdParty.defaultProvider;
+        
+        // 尝试设置默认提供商
+        try {
+          thirdPartyAPIService.setActiveProvider(defaultProvider);
+          this.thirdPartyProvider = defaultProvider;
+          console.log(`🔗 使用第三方API提供商: ${defaultProvider}`);
+        } catch (error) {
+          // 如果默认提供商不可用，使用第一个可用的
+          const firstAvailable = availableProviders[0].name;
+          thirdPartyAPIService.setActiveProvider(firstAvailable);
+          this.thirdPartyProvider = firstAvailable;
+          console.log(`🔗 使用第三方API提供商: ${firstAvailable} (默认提供商 ${defaultProvider} 不可用)`);
+        }
+      } else {
+        this.useThirdPartyAPI = false;
+        console.log('🔗 未找到可用的第三方API配置，将使用本地LM Studio');
+      }
+    } catch (error) {
+      this.useThirdPartyAPI = false;
+      console.log('🔗 第三方API检查失败，将使用本地LM Studio:', error.message);
     }
   }
 
@@ -77,10 +128,19 @@ class RAGService {
       
       // 4. 生成回答
       console.log('🤖 生成AI回答...');
-      const llmResult = await llmService.generateAnswer(prompt, {
-        maxTokens: options.maxTokens,
-        temperature: options.temperature
-      });
+      let llmResult;
+      
+      if (this.useThirdPartyAPI) {
+        llmResult = await thirdPartyAPIService.generateAnswer(prompt, {
+          maxTokens: options.maxTokens,
+          temperature: options.temperature
+        });
+      } else {
+        llmResult = await llmService.generateAnswer(prompt, {
+          maxTokens: options.maxTokens,
+          temperature: options.temperature
+        });
+      }
 
       const endTime = Date.now();
       const totalTime = endTime - startTime;
@@ -99,7 +159,8 @@ class RAGService {
           model: llmResult.model,
           usage: llmResult.usage,
           searchCount: results.length,
-          options: searchOptions
+          options: searchOptions,
+          provider: this.useThirdPartyAPI ? this.thirdPartyProvider : 'local'
         }
       };
 
@@ -183,14 +244,21 @@ class RAGService {
    */
   async getStatus() {
     try {
-      const [llmStatus, searchStatus] = await Promise.all([
-        llmService.getStatus(),
-        semanticSearchService.getStatus()
-      ]);
+      const statusPromises = [semanticSearchService.getStatus()];
+      
+      if (this.useThirdPartyAPI) {
+        statusPromises.push(thirdPartyAPIService.getStatus());
+      } else {
+        statusPromises.push(llmService.getStatus());
+      }
+      
+      const [searchStatus, llmStatus] = await Promise.all(statusPromises);
 
       return {
         status: this.isInitialized ? 'running' : 'not_initialized',
         isInitialized: this.isInitialized,
+        useThirdPartyAPI: this.useThirdPartyAPI,
+        thirdPartyProvider: this.thirdPartyProvider,
         services: {
           llm: llmStatus,
           search: searchStatus
@@ -204,7 +272,9 @@ class RAGService {
       return {
         status: 'error',
         error: error.message,
-        isInitialized: this.isInitialized
+        isInitialized: this.isInitialized,
+        useThirdPartyAPI: this.useThirdPartyAPI,
+        thirdPartyProvider: this.thirdPartyProvider
       };
     }
   }
@@ -214,10 +284,16 @@ class RAGService {
    */
   async healthCheck() {
     try {
-      const [llmHealth, searchHealth] = await Promise.all([
-        llmService.healthCheck(),
-        semanticSearchService.healthCheck()
-      ]);
+      const healthPromises = [semanticSearchService.healthCheck()];
+      
+      if (this.useThirdPartyAPI) {
+        // 对于第三方API，健康检查就是检查状态
+        healthPromises.push(Promise.resolve({ healthy: true }));
+      } else {
+        healthPromises.push(llmService.healthCheck());
+      }
+      
+      const [searchHealth, llmHealth] = await Promise.all(healthPromises);
 
       const isHealthy = llmHealth.healthy && searchHealth.healthy;
 
@@ -240,13 +316,64 @@ class RAGService {
    * 清理资源
    */
   async cleanup() {
-    await Promise.all([
-      llmService.cleanup(),
-      semanticSearchService.cleanup()
-    ]);
+    const cleanupPromises = [semanticSearchService.cleanup()];
+    
+    if (this.useThirdPartyAPI) {
+      cleanupPromises.push(thirdPartyAPIService.cleanup());
+    } else {
+      cleanupPromises.push(llmService.cleanup());
+    }
+    
+    await Promise.all(cleanupPromises);
     
     this.isInitialized = false;
     console.log('RAG问答服务资源已清理');
+  }
+
+  /**
+   * 切换API提供商
+   */
+  async switchProvider(providerName) {
+    try {
+      // 检查第三方API服务是否已初始化
+      if (!thirdPartyAPIService.initialized) {
+        await thirdPartyAPIService.initialize();
+      }
+
+      // 尝试切换到指定的提供商
+      thirdPartyAPIService.setActiveProvider(providerName);
+      
+      // 如果成功切换，更新状态
+      this.useThirdPartyAPI = true;
+      this.thirdPartyProvider = providerName;
+      
+      console.log(`✅ 已切换到第三方API提供商: ${providerName}`);
+      
+      // 如果之前使用的是本地LLM，现在切换到第三方API
+      if (!this.isInitialized) {
+        await this.initialize();
+      }
+    } catch (error) {
+      console.error(`❌ 切换API提供商失败:`, error.message);
+      throw error;
+    }
+  }
+
+  /**
+   * 获取可用的API提供商
+   */
+  getAvailableProviders() {
+    if (this.useThirdPartyAPI) {
+      return thirdPartyAPIService.getAvailableProviders();
+    } else {
+      return [{
+        name: 'local',
+        displayName: '本地LM Studio',
+        model: 'local-model',
+        maxTokens: 2048,
+        temperature: 0.7
+      }];
+    }
   }
 }
 

@@ -31,6 +31,27 @@ router.post('/chat', qaController.chat);
 router.get('/llm/status', qaController.getLLMStatus);
 
 /**
+ * @route GET /api/qa/third-party/status
+ * @desc 获取第三方API服务状态
+ * @access Public
+ */
+router.get('/third-party/status', qaController.getThirdPartyAPIStatus);
+
+/**
+ * @route GET /api/qa/providers
+ * @desc 获取可用的API提供商
+ * @access Public
+ */
+router.get('/providers', qaController.getAvailableProviders);
+
+/**
+ * @route POST /api/qa/providers/switch
+ * @desc 切换API提供商
+ * @access Public
+ */
+router.post('/providers/switch', qaController.switchProvider);
+
+/**
  * @route GET /api/qa/rag/status
  * @desc 获取RAG服务状态
  * @access Public

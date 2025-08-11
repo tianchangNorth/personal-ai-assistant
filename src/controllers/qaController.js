@@ -1,5 +1,6 @@
 const ragService = require('../services/ragService');
 const llmService = require('../services/llmService');
+const thirdPartyAPIService = require('../services/thirdPartyAPIService');
 
 /**
  * 问答控制器
@@ -125,6 +126,83 @@ class QAController {
       res.status(500).json({
         success: false,
         error: '获取LLM状态失败',
+        details: error.message
+      });
+    }
+  }
+
+  /**
+   * 获取第三方API服务状态
+   */
+  async getThirdPartyAPIStatus(req, res) {
+    try {
+      const status = await thirdPartyAPIService.getStatus();
+      res.json({
+        success: true,
+        data: status
+      });
+    } catch (error) {
+      console.error('获取第三方API状态失败:', error);
+      res.status(500).json({
+        success: false,
+        error: '获取第三方API状态失败',
+        details: error.message
+      });
+    }
+  }
+
+  /**
+   * 获取可用的API提供商
+   */
+  async getAvailableProviders(req, res) {
+    try {
+      const providers = ragService.getAvailableProviders();
+      res.json({
+        success: true,
+        data: {
+          providers,
+          currentProvider: ragService.thirdPartyProvider,
+          useThirdPartyAPI: ragService.useThirdPartyAPI
+        }
+      });
+    } catch (error) {
+      console.error('获取API提供商列表失败:', error);
+      res.status(500).json({
+        success: false,
+        error: '获取API提供商列表失败',
+        details: error.message
+      });
+    }
+  }
+
+  /**
+   * 切换API提供商
+   */
+  async switchProvider(req, res) {
+    try {
+      const { provider } = req.body;
+
+      if (!provider || typeof provider !== 'string') {
+        return res.status(400).json({
+          success: false,
+          error: '提供商名称不能为空'
+        });
+      }
+
+      await ragService.switchProvider(provider);
+
+      res.json({
+        success: true,
+        data: {
+          message: `已切换到API提供商: ${provider}`,
+          currentProvider: provider
+        }
+      });
+    } catch (error) {
+      console.error('切换API提供商失败:', error);
+      res.status(500).json({
+        success: false,
+        error: '切换API提供商失败',
         details: error.message
       });
     }
