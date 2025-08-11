@@ -16,7 +16,7 @@ router.get('/interactive', async (req, res) => {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WeComBot API 文档</title>
+    <title>个人AI助手 API 文档</title>
     <style>
         * {
             margin: 0;
@@ -211,8 +211,8 @@ router.get('/interactive', async (req, res) => {
 <body>
     <div class="container">
         <div class="header">
-            <h1>WeComBot API 文档</h1>
-            <p>企业微信RAG智能问答机器人 - 接口文档与测试工具</p>
+            <h1>个人AI助手 API 文档</h1>
+            <p>个人AI助手 - 基于文档智能问答的接口文档与测试工具</p>
             <div style="margin-top: 1rem;">
                 <span class="status-indicator" id="statusIndicator"></span>
                 <span id="statusText">检查服务状态中...</span>
@@ -229,7 +229,7 @@ router.get('/interactive', async (req, res) => {
         
         <div id="overview" class="content-section active">
             <h2>API 概览</h2>
-            <p>WeComBot提供完整的文档管理和语义搜索功能，支持PDF、Word、Markdown文档的上传、处理和智能检索。</p>
+            <p>个人AI助手提供完整的文档管理和智能问答功能，支持PDF、Word、Markdown文档的上传、处理和基于内容的智能问答。</p>
             
             <div class="stats-grid" id="statsGrid">
                 <div class="stat-card">
@@ -370,10 +370,10 @@ Character Encoding: UTF-8</pre>
                     <span class="endpoint-path">/api/qa/ask</span>
                 </div>
                 <div class="endpoint-body">
-                    <div class="endpoint-description">RAG智能问答 - 基于文档内容的智能问答</div>
+                    <div class="endpoint-description">个人AI助手智能问答 - 基于文档内容的智能问答</div>
                     <div class="code-block">
                         <pre>{
-  "question": "企业微信自建应用是什么？",
+  "question": "什么是RAG系统?",
   "topK": 5,
   "threshold": 0.3,
   "maxTokens": 2048,
@@ -394,8 +394,8 @@ Character Encoding: UTF-8</pre>
                     <div class="code-block">
                         <pre>{
   "questions": [
-    "企业微信自建应用是什么？",
-    "如何创建企业微信应用？"
+    "什么是RAG系统?",
+    "如何使用RAG系统？"
   ]
 }</pre>
                     </div>
@@ -412,7 +412,7 @@ Character Encoding: UTF-8</pre>
                     <div class="endpoint-description">直接LLM对话</div>
                     <div class="code-block">
                         <pre>{
-  "message": "你好，请介绍一下企业微信的主要功能"
+  "message": "你好，请介绍一下RAG系统的主要功能"
 }</pre>
                     </div>
                     <button class="try-it-btn" onclick="testLLMChat()">测试对话</button>
@@ -559,7 +559,7 @@ Character Encoding: UTF-8</pre>
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    question: '企业微信自建应用是什么？',
+                    question: '什么是RAG系统?',
                     topK: 3,
                     threshold: 0.3
                 })
@@ -574,8 +574,8 @@ Character Encoding: UTF-8</pre>
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     questions: [
-                        '企业微信自建应用是什么？',
-                        '如何创建企业微信应用？'
+                        '什么是RAG系统？',
+                        '如何使用RAG系统？'
                     ]
                 })
             });
@@ -689,11 +689,11 @@ router.get('/json', (req, res) => {
   const apiSpec = {
     openapi: '3.0.0',
     info: {
-      title: 'WeComBot API',
+      title: 'Personal AI Assistant API',
       version: '1.0.0',
-      description: '企业微信RAG智能问答机器人API',
+      description: '个人AI助手API',
       contact: {
-        name: 'WeComBot Team'
+        name: 'AI Assistant Team'
       }
     },
     servers: [

@@ -11,7 +11,7 @@ const config = {
 
   // 数据库配置
   database: {
-    path: process.env.DB_PATH || path.join(__dirname, '../../data/database/wecombot.db')
+    path: process.env.DB_PATH || path.join(__dirname, '../../data/database/personal-ai-assistant.db')
   },
 
   // 文件上传配置
@@ -35,19 +35,11 @@ const config = {
     temperature: parseFloat(process.env.LLM_TEMPERATURE) || 0.7
   },
 
-  // 企业微信配置
-  wecom: {
-    corpId: process.env.WECOM_CORP_ID,
-    corpSecret: process.env.WECOM_CORP_SECRET,
-    agentId: process.env.WECOM_AGENT_ID,
-    token: process.env.WECOM_TOKEN,
-    encodingAESKey: process.env.WECOM_ENCODING_AES_KEY
-  },
-
+  
   // 日志配置
   logging: {
     level: process.env.LOG_LEVEL || 'info',
-    file: process.env.LOG_FILE || path.join(__dirname, '../../logs/wecombot.log')
+    file: process.env.LOG_FILE || path.join(__dirname, '../../logs/personal-ai-assistant.log')
   },
 
   // 文本处理配置

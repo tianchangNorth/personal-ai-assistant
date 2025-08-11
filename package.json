@@ -1,7 +1,7 @@
 {
-  "name": "wecombot",
+  "name": "personal-ai-assistant",
   "version": "1.0.0",
-  "description": "企业微信RAG智能问答机器人",
+  "description": "个人AI助手 - 基于文档智能问答的AI助手",
   "main": "src/app.js",
   "scripts": {
     "start": "node src/app.js",
@@ -18,13 +18,14 @@
     "setup": "npm install && npm run download-model-simple"
   },
   "keywords": [
-    "wecom",
+    "ai",
+    "assistant",
     "rag",
     "chatbot",
-    "ai",
-    "document-processing"
+    "document-processing",
+    "personal-assistant"
   ],
-  "author": "WeComBot Team",
+  "author": "AI Assistant Team",
   "license": "MIT",
   "dependencies": {
     "express": "^4.18.2",

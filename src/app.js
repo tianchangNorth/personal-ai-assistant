@@ -69,7 +69,7 @@ class App {
     // 根路径
     this.app.get('/', (req, res) => {
       res.json({
-        message: '企业微信RAG智能问答机器人 API',
+        message: '个人AI助手 API',
         version: '1.0.0',
         docs: {
           interactive: '/api/docs/interactive',
@@ -83,7 +83,7 @@ class App {
     // API文档路由（简单版本）
     this.app.get('/api/docs', (req, res) => {
       res.json({
-        title: 'WeComBot API Documentation',
+        title: 'RAG API Documentation',
         version: '1.0.0',
         endpoints: {
           documents: {
@@ -216,7 +216,7 @@ class App {
       
       const server = this.app.listen(config.server.port, config.server.host, () => {
         console.log(`
-🚀 WeComBot API Server 启动成功!
+🚀 个人AI助手 API Server 启动成功!
 📍 地址: http://${config.server.host}:${config.server.port}
 🌍 环境: ${config.server.env}
 📚 API文档: http://${config.server.host}:${config.server.port}/api/docs
