@@ -173,21 +173,53 @@ CHUNK_OVERLAP=50
 MAX_CHUNKS_PER_QUERY=5
 ```
 
-### 第三方API配置
+### 第三方AI配置
 
-如果需要使用第三方API，可以在`.env`文件中配置相应的API密钥：
+系统支持多种第三方AI服务，通过BASE_URL自动识别供应商：
 
 ```bash
-# OpenAI配置
-OPENAI_API_KEY=your_openai_api_key_here
-OPENAI_MODEL=gpt-3.5-turbo
+# 第三方AI配置（最简格式）
+LLM_API_KEY=your_api_key_here
+LLM_BASE_URL=https://api.openai.com/v1
+LLM_MODEL=gpt-3.5-turbo
 
-# 百度文心一言配置
-BAIDU_API_KEY=your_baidu_api_key_here
-BAIDU_SECRET_KEY=your_baidu_secret_key_here
+# 可选配置
+LLM_MAX_TOKENS=4096
+LLM_TEMPERATURE=0.7
+LLM_FALLBACK_TO_LOCAL=true
+```
 
-# 阿里云通义千问配置
-QWEN_API_KEY=your_qwen_api_key_here
+**支持的供应商（系统自动识别）：**
+
+| 供应商 | BASE_URL示例 | 默认模型 |
+|--------|-------------|----------|
+| OpenAI | `https://api.openai.com/v1` | gpt-3.5-turbo |
+| Anthropic | `https://api.anthropic.com` | claude-3-sonnet-20240229 |
+| 百度文心一言 | `https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop/chat` | ernie-speed-128k |
+| 阿里云通义千问 | `https://dashscope.aliyuncs.com/api/v1/services/aigc/text-generation/generation` | qwen-turbo |
+| 智谱AI GLM | `https://open.bigmodel.cn/api/paas/v4/chat/completions` | glm-4-flash |
+| 月之暗面 Kimi | `https://api.moonshot.cn/v1/chat/completions` | moonshot-v1-8k |
+| 字节跳动豆包 | `https://ark.cn-beijing.volces.com/api/v3/chat/completions` | doubao-pro-4k |
+| 腾讯混元 | `https://hunyuan.tencentcloudapi.com` | hunyuan-pro |
+| Azure OpenAI | `https://your-resource.openai.azure.com/` | your-deployment-name |
+
+**使用说明：**
+1. 获取对应服务商的API密钥
+2. 设置 `LLM_API_KEY` 和 `LLM_BASE_URL`
+3. 系统会自动识别供应商并应用相应的配置
+4. 开启 `LLM_FALLBACK_TO_LOCAL=true` 可在API失败时回退到本地模型
+
+**配置示例：**
+```bash
+# 使用OpenAI
+LLM_API_KEY=sk-your-openai-key
+LLM_BASE_URL=https://api.openai.com/v1
+LLM_MODEL=gpt-4
+
+# 使用百度文心一言
+LLM_API_KEY=your-baidu-api-key
+LLM_BASE_URL=https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop/chat
+LLM_MODEL=ernie-speed-128k
 ```
 
 ## 🔧 故障排除
@@ -202,6 +234,7 @@ QWEN_API_KEY=your_qwen_api_key_here
 - 检查网络连接
 - 使用 `npm run download-backup` 下载备份模型
 - 手动下载模型文件到 `models/` 目录
+- 确保有足够的磁盘空间（至少200MB）
 
 #### 2. 文档上传失败
 

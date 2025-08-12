@@ -82,7 +82,7 @@ async function downloadModelSimple() {
       console.log('3. 尝试重新运行下载命令');
     }
     
-    console.log('\n⚠️  如果下载失败，WeComBot将使用Mock向量模式运行');
+    console.log('\n⚠️  如果下载失败，WeComBot将无法启动，请确保网络连接正常');
     process.exit(1);
   }
 }

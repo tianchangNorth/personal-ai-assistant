@@ -10,7 +10,6 @@ class VectorService {
     this.dimension = 512; // BGE-small-zh-v1.5的向量维度
     this.isInitialized = false;
     this.initPromise = null;
-    this.mockMode = false; // Mock模式标志
   }
 
   /**
@@ -38,17 +37,10 @@ class VectorService {
 
       this.isInitialized = true;
       console.log('✅ BGE中文向量模型初始化完成');
-      console.log(`📊 模型信息: ${this.modelName}, 维度: ${this.dimension}, Mock模式: ${this.mockMode}`);
+      console.log(`📊 模型信息: ${this.modelName}, 维度: ${this.dimension}`);
     } catch (error) {
       console.error('❌ 向量模型初始化失败:', error);
-      console.log('🔄 启用Mock向量模式...');
-
-      // 如果模型加载失败，使用Mock模式
-      this.model = null;
-      this.isInitialized = true;
-      this.mockMode = true;
-      console.log('✅ Mock向量模式已启用');
-      console.log(`📊 Mock模式信息: 维度: ${this.dimension}`);
+      throw error;
     }
   }
 
@@ -150,11 +142,8 @@ class VectorService {
       // 预处理文本
       const processedTexts = textArray.map(text => this.preprocessText(text));
 
-      if (this.mockMode || !this.model) {
-        // Mock模式：生成伪向量
-        console.log('使用Mock模式生成向量');
-        const vectors = processedTexts.map(text => this.generateMockVector(text));
-        return isArray ? vectors : vectors[0];
+      if (!this.model) {
+        throw new Error('向量模型未初始化，请确保模型已正确下载和加载');
       }
 
       // 使用真实模型编码
@@ -214,47 +203,10 @@ class VectorService {
       return isArray ? vectors : vectors[0];
     } catch (error) {
       console.error('文本向量化失败:', error);
-      // 如果真实模型失败，回退到Mock模式
-      console.log('回退到Mock向量模式');
-      this.mockMode = true;
-
-      const isArray = Array.isArray(texts);
-      const textArray = isArray ? texts : [texts];
-      const processedTexts = textArray.map(text => this.preprocessText(text));
-      const vectors = processedTexts.map(text => this.generateMockVector(text));
-      return isArray ? vectors : vectors[0];
+      throw error;
     }
   }
 
-  /**
-   * 生成Mock向量（基于文本内容的一致性向量）
-   * @param {string} text - 输入文本
-   * @returns {Array} Mock向量
-   */
-  generateMockVector(text) {
-    const vector = [];
-    // 使用文本内容生成一致的"向量"
-    const seed = this.hashCode(text || '');
-    for (let i = 0; i < this.dimension; i++) {
-      vector.push(Math.sin(seed + i) * 0.1);
-    }
-    return this.normalize(vector);
-  }
-
-  /**
-   * 计算字符串哈希值
-   * @param {string} str - 输入字符串
-   * @returns {number} 哈希值
-   */
-  hashCode(str) {
-    let hash = 0;
-    for (let i = 0; i < str.length; i++) {
-      const char = str.charCodeAt(i);
-      hash = ((hash << 5) - hash) + char;
-      hash = hash & hash; // 转换为32位整数
-    }
-    return hash;
-  }
 
   /**
    * 预处理文本
@@ -316,10 +268,9 @@ class VectorService {
    */
   getModelInfo() {
     return {
-      name: this.mockMode ? `${this.modelName} (Mock模式)` : this.modelName,
+      name: this.modelName,
       dimension: this.dimension,
-      isInitialized: this.isInitialized,
-      mockMode: this.mockMode
+      isInitialized: this.isInitialized
     };
   }
 
@@ -358,7 +309,7 @@ class VectorService {
 
     try {
       console.log(`开始向量化 ${chunks.length} 个文档块...`);
-      console.log(`向量服务状态: 初始化=${this.isInitialized}, Mock模式=${this.mockMode}`);
+      console.log(`向量服务状态: 初始化=${this.isInitialized}`);
 
       // 提取文本内容
       const texts = chunks.map(chunk => chunk.text || chunk.content || '');
