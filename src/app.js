@@ -201,7 +201,7 @@ class App {
 
       console.log('✅ BGE向量模型已就绪，将使用真实语义搜索');
     } catch (error) {
-      console.log('⚠️  BGE向量模型未找到，将使用Mock模式');
+      console.log('⚠️  BGE向量模型未找');
       console.log('💡 运行 "npm run download-model" 下载真实模型以获得更好的语义搜索效果');
       console.log('📖 详细说明请查看: 模型下载说明.md');
     }

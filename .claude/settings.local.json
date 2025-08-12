@@ -15,7 +15,8 @@
       "Bash(mkdir:*)",
       "Bash(git rm:*)",
       "Bash(mv:*)",
-      "Bash(cp:*)"
+      "Bash(cp:*)",
+      "Bash(xcopy:*)"
     ],
     "deny": []
   }

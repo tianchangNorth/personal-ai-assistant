@@ -13,7 +13,7 @@ async function downloadModelSimple() {
   console.log('🤖 WeComBot BGE模型简化下载工具\n');
   
   const modelName = 'Xenova/bge-small-zh-v1.5';
-  const cacheDir = path.join(__dirname, 'models', 'cache');
+  const cacheDir = path.join(__dirname, '..', 'models', 'cache');
   
   try {
     // 确保目录存在
@@ -125,7 +125,7 @@ async function downloadBackupModel(cacheDir) {
  * 检查所有可用模型
  */
 async function checkAllModels() {
-  const cacheDir = path.join(__dirname, 'models', 'cache');
+  const cacheDir = path.join(__dirname, '..', 'models', 'cache');
   const models = [
     { name: 'Xenova/bge-small-zh-v1.5', description: 'BGE中文模型' },
     { name: 'Xenova/all-MiniLM-L6-v2', description: '多语言轻量模型' }
@@ -160,7 +160,7 @@ async function main() {
       await checkAllModels();
       break;
     case 'backup':
-      const cacheDir = path.join(__dirname, 'models', 'cache');
+      const cacheDir = path.join(__dirname, '..', 'models', 'cache');
       await fs.mkdir(cacheDir, { recursive: true });
       await downloadBackupModel(cacheDir);
       break;
