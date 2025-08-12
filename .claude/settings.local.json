@@ -12,7 +12,10 @@
       "Bash(npm test:*)",
       "Bash(curl:*)",
       "WebFetch(domain:developer.work.weixin.qq.com)",
-      "Bash(mkdir:*)"
+      "Bash(mkdir:*)",
+      "Bash(git rm:*)",
+      "Bash(mv:*)",
+      "Bash(cp:*)"
     ],
     "deny": []
   }

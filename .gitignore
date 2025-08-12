@@ -250,3 +250,50 @@ test.db-journal
 scratch/
 playground/
 experiments/
+
+# 本地数据文件
+data/documents/*
+!data/documents/.gitkeep
+data/metadata.json
+data/database/*.db
+data/database/*.db-journal
+data/database/*.db-wal
+data/database/*.db-shm
+data/*.db
+data/vectors/*
+!data/vectors/.gitkeep
+
+# 本地配置文件
+.env.local
+.env.development
+.env.production
+
+# 临时上传文件
+uploads/*/
+!uploads/.gitkeep
+
+# 模型缓存文件
+models/cache/*
+!models/cache/.gitkeep
+
+# 本地测试文件
+*.local
+*.dev
+*.test
+
+# 临时下载文件
+*.download
+*.tmp
+*.temp
+
+# 本地日志
+logs/debug.log
+logs/error.log
+logs/combined.log
+
+# 系统临时文件
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
