@@ -10,11 +10,11 @@
     "test:watch": "jest --watch",
     "build": "npm run build:frontend",
     "build:frontend": "cd frontend && npm run build",
-    "download-model-simple": "node scripts/model-simple.js",
-    "download-backup": "node download-model-simple.js backup",
-    "check-model": "node download-model.js check",
-    "check-all-models": "node download-model-simple.js check",
-    "setup": "npm install && npm run scripts/download-model-simple"
+    "download-model": "node scripts/download-model.js",
+    "download-backup": "node scripts/download-model.js backup",
+    "check-model": "node scripts/download-model.js check",
+    "check-all-models": "node scripts/download-model.js check",
+    "setup": "npm install && npm run download-model"
   },
   "keywords": [
     "ai",

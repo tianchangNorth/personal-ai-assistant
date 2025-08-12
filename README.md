@@ -112,10 +112,7 @@ cp .env.example .env
 
 4. 下载AI模型
 ```bash
-# 下载基础模型
-npm run download-model-simple
-
-# 或下载完整模型
+# 下载模型
 npm run download-model
 ```
 
@@ -176,6 +173,10 @@ MIT License
 ## 🤝 贡献指南
 
 欢迎提交Issue和Pull Request！
+
+## 📚 用户手册
+
+详细的使用说明请参考：[用户手册](docs/USER_MANUAL.md)
 
 ## 📞 联系我们
 
