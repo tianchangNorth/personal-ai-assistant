@@ -247,6 +247,10 @@ class SemanticSearchService {
       `;
       
       const database = require('../models/database');
+      // 确保数据库已初始化
+      if (!database.db) {
+        await database.initialize();
+      }
       return await database.get(query, [chunkId]);
     } catch (error) {
       console.error(`获取块信息失败 ${chunkId}:`, error);

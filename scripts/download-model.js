@@ -56,7 +56,7 @@ async function downloadModelSimple() {
     console.log(`✅ 模型测试成功! 向量维度: ${testVector.data.length}`);
     
     console.log('\n🎉 BGE模型安装完成!');
-    console.log('💡 现在可以启动WeComBot服务使用真实的语义搜索功能');
+    console.log('💡 现在可以启动ai-assistant服务使用真实的语义搜索功能');
     
   } catch (error) {
     console.error('\n❌ 模型下载失败:', error.message);
