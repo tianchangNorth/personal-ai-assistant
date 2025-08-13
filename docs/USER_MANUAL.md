@@ -197,6 +197,34 @@ npm run custom-model help
 3. **重启服务**：切换模型后需要重启服务以应用新配置
 4. **存储空间**：大型模型需要更多磁盘空间，请确保有足够空间
 
+### 自动默认模型设置
+
+系统提供智能的默认模型自动设置功能：
+
+**自动设置规则**：
+- 当系统中只有一个已安装的向量模型时，系统会自动将其设置为默认模型
+- 系统会检查并更新 `.env` 文件中的 `VECTOR_MODEL_PATH` 和 `VECTOR_DIMENSION` 配置
+- 如果默认模型已正确配置，系统不会重复设置
+
+**触发时机**：
+- 下载新模型完成后自动检查并设置
+- 手动运行 `npm run custom-model auto-set` 命令
+- 系统启动时会自动检测默认模型配置
+
+**使用示例**：
+```bash
+# 手动触发自动设置
+npm run custom-model auto-set
+
+# 下载模型后自动设置（无需手动操作）
+npm run custom-model download Xenova/bge-base-zh-v1.5
+```
+
+**优势**：
+- 减少手动配置步骤
+- 避免配置错误
+- 提供更好的用户体验
+
 ### 手动配置（高级用户）
 
 您也可以直接编辑`.env`文件来配置自定义模型：
@@ -217,21 +245,6 @@ VECTOR_DIMENSION=768  # 根据模型实际维度设置
 - **FAISS**: 高性能向量搜索（适合中等规模数据）
 - **Redis**: 分布式内存数据库（适合高并发场景）
 - **PostgreSQL + pgvector**: 关系型向量数据库（适合企业级部署）
-
-### 数据库管理命令
-
-```bash
-# 列出支持的数据库
-npm run vector-db list
-
-# 切换数据库
-npm run vector-db switch redis
-
-# 查看当前数据库信息
-npm run vector-db info
-
-# 测试数据库连接
-npm run vector-db test postgres
 ```
 
 ### 数据库配置示例

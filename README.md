@@ -54,7 +54,6 @@ wecombot/
 │   └── cache/             # 模型缓存
 ├── uploads/               # 文件上传目录
 ├── logs/                  # 日志文件
-├── tests/                 # 测试用例
 ├── scripts/               # 脚本文件
 ├── docker/                # Docker配置
 └── docs/                  # 项目文档
@@ -78,11 +77,6 @@ wecombot/
 - Vue.js 3
 - Element Plus
 - Vite构建工具
-
-**测试**:
-- Jest测试框架
-- Supertest API测试
-- 代码覆盖率报告
 
 ## 📦 安装部署
 
@@ -222,26 +216,12 @@ export POSTGRES_URL=postgresql://localhost:5432/vectordb
 
 ## 📖 API文档
 
-### 文档处理接口
+详细的API接口文档请参考：[API文档](docs/API_DOCUMENTATION.md)
 
-- `POST /api/documents/upload` - 上传文档
-- `GET /api/documents` - 获取文档列表
-- `DELETE /api/documents/:id` - 删除文档
-
-### 问答接口
-
-- `POST /api/query` - 智能问答
-- `GET /api/query/history` - 查询历史
-
-## 🧪 测试
-
-```bash
-# 运行所有测试
-npm test
-
-# 运行测试并监听变化
-npm run test:watch
-```
+主要接口包括：
+- 文档处理：上传、列表、删除
+- 智能问答：查询、历史记录
+- 向量搜索：语义检索、相似度匹配
 
 ## 📄 许可证
 

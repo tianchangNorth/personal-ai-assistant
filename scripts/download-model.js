@@ -8,6 +8,61 @@
 const { pipeline } = require('@xenova/transformers');
 const path = require('path');
 const fs = require('fs').promises;
+const { autoSetDefaultModel } = require('./custom-model-manager');
+
+// 简单的进度条实现
+class ProgressBar {
+    constructor(total, width = 30) {
+        this.total = total;
+        this.width = width;
+        this.current = 0;
+        this.startTime = Date.now();
+    }
+
+    update(current) {
+        this.current = current;
+        const percentage = Math.min((current / this.total) * 100, 100);
+        const filledWidth = Math.floor((percentage / 100) * this.width);
+        const emptyWidth = this.width - filledWidth;
+        
+        const filledBar = '█'.repeat(filledWidth);
+        const emptyBar = '░'.repeat(emptyWidth);
+        
+        const elapsed = Date.now() - this.startTime;
+        const speed = current > 0 ? (current / (elapsed / 1000)).toFixed(1) : 0;
+        const eta = current > 0 ? Math.round((this.total - current) / speed) : 0;
+        
+        process.stdout.write(`\r📥 下载进度: [${filledBar}${emptyBar}] ${percentage.toFixed(1)}% | ${current}/${this.total} | ${speed}/s | ETA: ${eta}s`);
+        
+        if (percentage >= 100) {
+            process.stdout.write('\n');
+        }
+    }
+
+    finish() {
+        this.update(this.total);
+    }
+}
+
+/**
+ * 模拟下载进度
+ */
+function simulateProgress(totalSteps, duration, callback) {
+    return new Promise((resolve) => {
+        let currentStep = 0;
+        const stepDuration = duration / totalSteps;
+        
+        const interval = setInterval(() => {
+            currentStep++;
+            callback(currentStep, totalSteps);
+            
+            if (currentStep >= totalSteps) {
+                clearInterval(interval);
+                resolve();
+            }
+        }, stepDuration);
+    });
+}
 
 async function downloadModelSimple() {
   console.log('🤖 WeComBot BGE模型简化下载工具\n');
@@ -41,13 +96,29 @@ async function downloadModelSimple() {
     console.log('📝 使用原生PyTorch模型，获得最佳性能和兼容性');
     console.log('⏳ 预计需要2-5分钟，请耐心等待...\n');
 
-    // 使用纯PyTorch模型配置
-    const model = await pipeline('feature-extraction', modelName, {
+    // 创建进度条
+    const totalSteps = 100;
+    const estimatedTime = 120000; // 2分钟估计
+    const progressBar = new ProgressBar(totalSteps);
+    
+    // 开始模拟进度
+    const progressPromise = simulateProgress(totalSteps, estimatedTime, (current, total) => {
+        progressBar.update(current);
+    });
+    
+    console.log('⏳ 开始下载模型文件...\n');
+
+    // 同时开始实际的模型下载
+    const modelPromise = pipeline('feature-extraction', modelName, {
       cache_dir: cacheDir,
       local_files_only: false
       // 完全移除quantized等ONNX相关配置，使用原生PyTorch
     });
     
+    // 等待两个任务完成
+    const [model] = await Promise.all([modelPromise, progressPromise]);
+    
+    progressBar.finish();
     console.log('✅ 模型下载完成!');
     
     // 测试模型
@@ -57,6 +128,10 @@ async function downloadModelSimple() {
     
     console.log('\n🎉 BGE模型安装完成!');
     console.log('💡 现在可以启动ai-assistant服务使用真实的语义搜索功能');
+    
+    // 检查是否需要自动设置默认模型
+    console.log('\n🔍 检查是否需要自动设置默认模型...');
+    await autoSetDefaultModel(cacheDir);
     
   } catch (error) {
     console.error('\n❌ 模型下载失败:', error.message);
@@ -96,12 +171,29 @@ async function downloadBackupModel(cacheDir) {
   const backupModelName = 'Xenova/all-MiniLM-L6-v2';
   
   try {
-    const model = await pipeline('feature-extraction', backupModelName, {
+    // 创建进度条
+    const totalSteps = 100;
+    const estimatedTime = 30000; // 30秒估计
+    const progressBar = new ProgressBar(totalSteps);
+    
+    // 开始模拟进度
+    const progressPromise = simulateProgress(totalSteps, estimatedTime, (current, total) => {
+        progressBar.update(current);
+    });
+    
+    console.log('⏳ 开始下载备用模型文件...\n');
+    
+    // 同时开始实际的模型下载
+    const modelPromise = pipeline('feature-extraction', backupModelName, {
       cache_dir: cacheDir,
       local_files_only: false
       // 备用模型也使用PyTorch版本，不使用量化
     });
     
+    // 等待两个任务完成
+    const [model] = await Promise.all([modelPromise, progressPromise]);
+    
+    progressBar.finish();
     console.log('✅ 备用模型下载成功!');
     console.log('📊 备用模型信息:');
     console.log('   - 名称: all-MiniLM-L6-v2');
@@ -115,6 +207,10 @@ async function downloadBackupModel(cacheDir) {
     
     console.log('\n💡 备用模型已安装，可以提供基本的语义搜索功能');
     console.log('💡 如需更好的中文支持，请稍后重试下载BGE模型');
+    
+    // 检查是否需要自动设置默认模型
+    console.log('\n🔍 检查是否需要自动设置默认模型...');
+    await autoSetDefaultModel(cacheDir);
     
   } catch (error) {
     throw new Error(`备用模型下载失败: ${error.message}`);
