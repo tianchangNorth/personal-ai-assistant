@@ -32,7 +32,7 @@
 
 ```bash
 git clone <repository-url>
-cd wecombot
+cd personal-ai-assistant
 ```
 
 ### 2. 安装依赖

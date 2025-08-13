@@ -1,8 +1,8 @@
-# WeComBot API 接口文档
+# 个人AI助手 API 接口文档
 
 ## 📋 概述
 
-WeComBot是一个基于RAG（检索增强生成）技术的企业微信智能问答机器人API服务。本文档详细描述了所有可用的API接口。
+个人AI助手是一个基于RAG（检索增强生成）技术的智能问答系统API服务。本文档详细描述了所有可用的API接口。
 
 **基础信息**
 - **Base URL**: `http://localhost:3000`
@@ -35,7 +35,7 @@ WeComBot是一个基于RAG（检索增强生成）技术的企业微信智能问
 **响应示例**:
 ```json
 {
-  "message": "企业微信RAG智能问答机器人 API",
+  "message": "个人AI助手 RAG智能问答系统 API",
   "version": "1.0.0",
   "docs": "/api/docs",
   "health": "/health"
@@ -48,7 +48,7 @@ WeComBot是一个基于RAG（检索增强生成）技术的企业微信智能问
 **响应示例**:
 ```json
 {
-  "title": "WeComBot API Documentation",
+  "title": "个人AI助手 API Documentation",
   "version": "1.0.0",
   "endpoints": {
     "documents": { ... },
@@ -1118,6 +1118,6 @@ curl http://localhost:3000/api/qa/health
 ## 📞 技术支持
 
 如有问题或建议，请联系开发团队：
-- **项目地址**: WeComBot
+- **项目地址**: 个人AI助手
 - **文档版本**: v1.0.0
 - **最后更新**: 2025-08-07
