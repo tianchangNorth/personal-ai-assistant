@@ -124,11 +124,14 @@ npm run custom-model list
 # 下载默认模型
 npm run download-model
 
-# 下载备份模型（轻量级）
-pm run download-backup
+# 下载指定模型
+npm run custom-model download <模型名称>
 
 # 检查默认模型状态
 npm run check-model
+
+# 设置为默认模型
+npm run custom-model set-default <模型名称>
 
 # 一键安装
 npm run setup
