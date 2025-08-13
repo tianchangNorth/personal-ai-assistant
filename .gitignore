@@ -160,12 +160,7 @@ data/vectors/*
 *.index
 
 # 测试生成的文件
-tests/uploads/*
-tests/testData/*
-tests/temp/*
-!tests/uploads/.gitkeep
-!tests/testData/.gitkeep
-!tests/temp/.gitkeep
+tests/
 
 # 覆盖率报告
 coverage/
@@ -245,6 +240,10 @@ docs/.vuepress/dist/
 # 测试数据库
 test.db
 test.db-journal
+
+# 测试目录
+test/
+tests/
 
 # 开发时的临时文件
 scratch/
