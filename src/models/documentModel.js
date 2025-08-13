@@ -136,6 +136,9 @@ class DocumentModel {
    */
   async saveDocumentChunks(documentId, chunks) {
     try {
+      // 使用事务确保数据一致性
+      await database.beginTransaction();
+      
       // 先删除已存在的块
       await database.run('DELETE FROM document_chunks WHERE document_id = ?', [documentId]);
 
@@ -158,7 +161,13 @@ class DocumentModel {
           JSON.stringify(chunk.metadata || {})
         ]);
       }
+      
+      // 提交事务
+      await database.commit();
+      console.log(`成功保存 ${chunks.length} 个文档块到数据库`);
     } catch (error) {
+      // 回滚事务
+      await database.rollback();
       console.error('保存文档块失败:', error);
       throw error;
     }

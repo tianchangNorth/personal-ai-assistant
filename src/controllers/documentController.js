@@ -96,17 +96,19 @@ class DocumentController {
       // 保存文档块
       await documentModel.saveDocumentChunks(documentId, chunks);
 
+      // 更新状态为完成
+      await documentModel.updateProcessingStatus(documentId, 'completed');
+
       // 防抖重建向量索引以确保数据一致性
       try {
         console.log(`文档 ${documentId} 处理完成，计划重建向量索引...`);
+        // 添加延迟确保数据库事务完全提交
+        await new Promise(resolve => setTimeout(resolve, 500));
         await this.scheduleRebuildIndex();
       } catch (vectorError) {
         console.error(`调度重建向量索引失败 ${documentId}:`, vectorError);
         // 不影响文档处理流程，继续执行
       }
-
-      // 更新状态为完成
-      await documentModel.updateProcessingStatus(documentId, 'completed');
 
       console.log(`文档处理完成: ${documentId}, 生成 ${chunks.length} 个文本块`);
     } catch (error) {

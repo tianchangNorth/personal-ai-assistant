@@ -306,12 +306,21 @@ class SemanticSearchService {
       
       // 确保数据库已初始化
       const database = require('../models/database');
-      if (!database.db) {
+      try {
+        if (!database.db) {
+          await database.initialize();
+        }
+        
+        // 测试数据库连接
+        await database.get('SELECT 1 as test');
+      } catch (dbError) {
+        console.warn('数据库连接异常，重新初始化...');
         await database.initialize();
       }
       
       // 获取所有文档块
       const chunks = await documentModel.getAllChunks();
+      console.log(`获取到 ${chunks.length} 个文档块`);
       
       // 向量化所有块
       const vectorResults = await vectorService.vectorizeChunks(chunks);
