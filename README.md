@@ -100,7 +100,7 @@ cp .env.example .env
 # 编辑.env文件，填入相应配置
 ```
 
-4. 下载AI模型
+4. 下载向量模型
 ```bash
 # 下载模型
 npm run download-model
