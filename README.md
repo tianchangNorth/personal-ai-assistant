@@ -85,8 +85,8 @@ wecombot/
 
 1. 克隆项目
 ```bash
-git clone <repository-url>
-cd project-name
+git clone https://github.com/tianchangNorth/personal-ai-assistant
+cd personal-ai-assistant
 ```
 
 2. 安装依赖
