@@ -14,7 +14,8 @@
     "download-backup": "node scripts/download-model.js backup",
     "check-model": "node scripts/download-model.js check",
     "check-all-models": "node scripts/download-model.js check",
-    "setup": "npm install && npm run download-model"
+    "setup": "npm install && npm run download-model",
+    "custom-model": "node scripts/custom-model-manager.js"
   },
   "keywords": [
     "ai",

@@ -15,6 +15,8 @@
 - 🎯 增强的RAG提示词构建
 - 📈 查询历史记录管理
 - 🛠️ 权限配置管理
+- 🎛️ **多向量数据库支持**（Memory、FAISS、Redis、PostgreSQL）
+- 🔧 **自定义向量模型支持**（7+种推荐模型，一键切换）
 
 ## 📁 项目结构
 
@@ -64,7 +66,8 @@ wecombot/
 **后端**:
 - Node.js + Express
 - SQLite数据库
-- FAISS向量检索
+- **多向量数据库支持**（Memory、FAISS、Redis、PostgreSQL+pgvector）
+- **可扩展向量模型**（支持Transformers.js兼容模型）
 - BGE中文向量模型 (@xenova/transformers)
 - llama.cpp + Qwen模型
 - 第三方API集成 (axios)
@@ -141,6 +144,82 @@ npm run download-backup
 
 # 一键安装
 npm run setup
+```
+
+## 🎛️ 自定义向量模型
+
+### 支持的模型
+系统支持多种Transformers.js兼容的向量模型，包括：
+
+| 模型名称 | 描述 | 维度 | 大小 | 语言 |
+|---------|------|------|------|------|
+| `Xenova/bge-small-zh-v1.5` | BGE中文小型版（默认） | 512 | ~130MB | 中文 |
+| `Xenova/bge-base-zh-v1.5` | BGE中文基础版 | 768 | ~400MB | 中文 |
+| `Xenova/bge-large-zh-v1.5` | BGE中文大型版 | 1024 | ~1.2GB | 中文 |
+| `Xenova/all-MiniLM-L6-v2` | 多语言轻量模型 | 384 | ~25MB | 多语言 |
+| `Xenova/paraphrase-multilingual-MiniLM-L12-v2` | 多语言句子相似度 | 384 | ~100MB | 多语言 |
+| `Xenova/e5-small-v2` | E5英文小型版 | 384 | ~35MB | 英文 |
+| `Xenova/e5-base-v2` | E5英文基础版 | 768 | ~110MB | 英文 |
+
+### 模型管理命令
+
+```bash
+# 查看可用模型
+npm run custom-model list
+
+# 下载新模型
+npm run custom-model download Xenova/bge-base-zh-v1.5
+
+# 设置为默认模型
+npm run custom-model set-default Xenova/bge-base-zh-v1.5
+
+# 检查模型状态
+npm run custom-model check Xenova/bge-base-zh-v1.5
+```
+
+### 模型选择建议
+
+- **中文场景**: `Xenova/bge-small-zh-v1.5` → `Xenova/bge-base-zh-v1.5` → `Xenova/bge-large-zh-v1.5`
+- **多语言场景**: `Xenova/all-MiniLM-L6-v2` 或 `Xenova/paraphrase-multilingual-MiniLM-L12-v2`
+- **英文场景**: `Xenova/e5-small-v2` 或 `Xenova/e5-base-v2`
+
+**注意**: 切换模型后需要重建向量索引，系统会自动检测模型维度。
+
+## 🗄️ 向量数据库管理
+
+### 支持的向量数据库
+
+- **Memory**: 内存存储（默认，轻量级）
+- **FAISS**: 高性能向量搜索
+- **Redis**: 分布式内存数据库
+- **PostgreSQL + pgvector**: 关系型向量数据库
+
+### 数据库管理命令
+
+```bash
+# 列出支持的数据库
+npm run vector-db list
+
+# 切换数据库
+npm run vector-db switch redis
+
+# 查看当前数据库信息
+npm run vector-db info
+
+# 测试数据库连接
+npm run vector-db test postgres
+```
+
+### 配置示例
+
+```bash
+# 使用Redis作为向量数据库
+export VECTOR_DB_TYPE=redis
+export REDIS_URL=redis://localhost:6379
+
+# 使用PostgreSQL
+export VECTOR_DB_TYPE=postgres
+export POSTGRES_URL=postgresql://localhost:5432/vectordb
 ```
 
 ## 📖 API文档

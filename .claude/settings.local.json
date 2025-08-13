@@ -16,7 +16,8 @@
       "Bash(git rm:*)",
       "Bash(mv:*)",
       "Bash(cp:*)",
-      "Bash(xcopy:*)"
+      "Bash(xcopy:*)",
+      "Bash(npm run custom-model:*)"
     ],
     "deny": []
   }

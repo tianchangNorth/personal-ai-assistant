@@ -51,8 +51,14 @@ cp .env.example .env
 ### 4. 下载AI模型
 
 ```bash
-# 下载模型
+# 下载默认模型
 npm run download-model
+
+# 查看所有可用模型
+npm run custom-model list
+
+# 下载其他模型（可选）
+npm run custom-model download Xenova/bge-base-zh-v1.5
 ```
 
 ### 5. 启动服务
@@ -133,6 +139,122 @@ npm start
    - 定期优化索引提高检索效率
    - 支持增量更新
    - 自动维护索引健康状态
+
+## 🎛️ 向量模型管理
+
+### 支持的向量模型
+
+系统支持多种Transformers.js兼容的向量模型，您可以根据需求选择最适合的模型：
+
+| 模型名称 | 描述 | 维度 | 大小 | 适用场景 |
+|---------|------|------|------|----------|
+| `Xenova/bge-small-zh-v1.5` | BGE中文小型版 | 512 | ~130MB | 中文文档，默认选择 |
+| `Xenova/bge-base-zh-v1.5` | BGE中文基础版 | 768 | ~400MB | 中文文档，更高精度 |
+| `Xenova/bge-large-zh-v1.5` | BGE中文大型版 | 1024 | ~1.2GB | 中文文档，最高精度 |
+| `Xenova/all-MiniLM-L6-v2` | 多语言轻量模型 | 384 | ~25MB | 多语言文档，资源受限 |
+| `Xenova/paraphrase-multilingual-MiniLM-L12-v2` | 多语言句子相似度 | 384 | ~100MB | 多语言文档，高质量 |
+| `Xenova/e5-small-v2` | E5英文小型版 | 384 | ~35MB | 英文文档，轻量级 |
+| `Xenova/e5-base-v2` | E5英文基础版 | 768 | ~110MB | 英文文档，平衡性能 |
+
+### 模型管理命令
+
+```bash
+# 查看所有可用模型
+npm run custom-model list
+
+# 下载新模型
+npm run custom-model download Xenova/bge-base-zh-v1.5
+
+# 检查模型状态
+npm run custom-model check Xenova/bge-base-zh-v1.5
+
+# 设置为默认模型
+npm run custom-model set-default Xenova/bge-base-zh-v1.5
+
+# 查看帮助信息
+npm run custom-model help
+```
+
+### 模型选择建议
+
+**中文文档处理**：
+- 轻量级：`Xenova/bge-small-zh-v1.5`（默认）
+- 平衡性：`Xenova/bge-base-zh-v1.5`
+- 高精度：`Xenova/bge-large-zh-v1.5`
+
+**多语言文档处理**：
+- 轻量级：`Xenova/all-MiniLM-L6-v2`
+- 高质量：`Xenova/paraphrase-multilingual-MiniLM-L12-v2`
+
+**英文文档处理**：
+- 轻量级：`Xenova/e5-small-v2`
+- 平衡性：`Xenova/e5-base-v2`
+
+### 模型切换注意事项
+
+1. **向量维度一致性**：切换模型后，所有现有的向量索引需要重建
+2. **系统自动检测**：系统会自动检测新模型的维度并更新配置
+3. **重启服务**：切换模型后需要重启服务以应用新配置
+4. **存储空间**：大型模型需要更多磁盘空间，请确保有足够空间
+
+### 手动配置（高级用户）
+
+您也可以直接编辑`.env`文件来配置自定义模型：
+
+```bash
+# 设置自定义模型路径
+VECTOR_MODEL_PATH=./models/cache/your-custom-model-name
+VECTOR_DIMENSION=768  # 根据模型实际维度设置
+```
+
+## 🗄️ 向量数据库管理
+
+### 支持的向量数据库
+
+系统支持多种向量数据库后端，您可以根据性能和扩展性需求选择：
+
+- **Memory**: 内存存储（默认，轻量级，适合小型部署）
+- **FAISS**: 高性能向量搜索（适合中等规模数据）
+- **Redis**: 分布式内存数据库（适合高并发场景）
+- **PostgreSQL + pgvector**: 关系型向量数据库（适合企业级部署）
+
+### 数据库管理命令
+
+```bash
+# 列出支持的数据库
+npm run vector-db list
+
+# 切换数据库
+npm run vector-db switch redis
+
+# 查看当前数据库信息
+npm run vector-db info
+
+# 测试数据库连接
+npm run vector-db test postgres
+```
+
+### 数据库配置示例
+
+```bash
+# 使用Redis作为向量数据库
+export VECTOR_DB_TYPE=redis
+export REDIS_URL=redis://localhost:6379
+
+# 使用PostgreSQL
+export VECTOR_DB_TYPE=postgres
+export POSTGRES_URL=postgresql://localhost:5432/vectordb
+
+# 使用FAISS（默认）
+export VECTOR_DB_TYPE=faiss
+```
+
+### 数据库选择建议
+
+- **开发/测试环境**：Memory（最简单）
+- **中小型生产环境**：FAISS（性能好）
+- **高并发生产环境**：Redis（分布式）
+- **企业级部署**：PostgreSQL（稳定性好）
 
 ## ⚙️ 配置说明
 
@@ -236,7 +358,44 @@ LLM_MODEL=ernie-speed-128k
 - 手动下载模型文件到 `models/` 目录
 - 确保有足够的磁盘空间（至少200MB）
 
-#### 2. 文档上传失败
+#### 2. 向量模型相关问题
+
+**问题**: 自定义向量模型无法加载
+
+**解决方案**:
+```bash
+# 检查模型状态
+npm run custom-model check your-model-name
+
+# 清理缓存并重新下载
+rm -rf ./models/cache/*
+npm run custom-model download your-model-name
+
+# 检查网络连接
+ping huggingface.co
+
+# 使用代理（如果需要）
+export HTTP_PROXY=http://proxy:port
+export HTTPS_PROXY=http://proxy:port
+```
+
+**问题**: 模型切换后向量检索失败
+
+**解决方案**:
+- 重建向量索引：删除现有索引文件，让系统重新生成
+- 检查模型维度配置：`VECTOR_DIMENSION` 应与实际模型维度匹配
+- 重启服务应用新配置
+- 查看日志文件了解详细错误信息
+
+**问题**: 向量模型内存占用过高
+
+**解决方案**:
+- 使用更小的模型（如 `Xenova/all-MiniLM-L6-v2`）
+- 调整系统参数减少并发处理
+- 增加系统内存
+- 使用向量数据库分担内存压力
+
+#### 3. 文档上传失败
 
 **问题**: 文档上传失败或处理失败
 
@@ -245,7 +404,7 @@ LLM_MODEL=ernie-speed-128k
 - 确认文件大小不超过10MB
 - 查看日志文件 `logs/personal-ai-assistant.log` 了解详细错误
 
-#### 3. 回答质量不佳
+#### 4. 回答质量不佳
 
 **问题**: 系统回答不准确或不相关
 
@@ -254,8 +413,9 @@ LLM_MODEL=ernie-speed-128k
 - 重建向量索引
 - 调整文本处理参数（CHUNK_SIZE, CHUNK_OVERLAP）
 - 优化提问方式
+- 尝试使用更高质量的向量模型
 
-#### 4. 内存不足
+#### 5. 内存不足
 
 **问题**: 系统运行缓慢或崩溃
 
@@ -294,6 +454,14 @@ npm run init:db
 
 A: 目前支持PDF、Word（.docx）和Markdown（.md）格式。
 
+### Q: 支持哪些向量模型？
+
+A: 支持多种Transformers.js兼容的向量模型，包括：
+- BGE系列中文模型（small/base/large）
+- 多语言模型（all-MiniLM-L6-v2等）
+- E5系列英文模型
+- 可通过 `npm run custom-model list` 查看完整列表
+
 ### Q: 如何提高回答质量？
 
 A: 
@@ -301,6 +469,8 @@ A:
 - 使用高质量的文档
 - 重建向量索引
 - 优化提问方式
+- 尝试使用更高质量的向量模型（如 `Xenova/bge-base-zh-v1.5`）
+- 调整文本处理参数（CHUNK_SIZE, CHUNK_OVERLAP）
 
 ### Q: 系统是否需要联网？
 
@@ -319,6 +489,9 @@ A:
 
 A: 
 - 内存：约4-8GB（取决于模型大小）
+  - 小型模型（all-MiniLM-L6-v2）：~2-4GB
+  - 中型模型（bge-small-zh-v1.5）：~4-6GB
+  - 大型模型（bge-large-zh-v1.5）：~6-8GB
 - 磁盘：约5-10GB（模型文件+数据）
 - CPU：中等占用（推理时较高）
 
