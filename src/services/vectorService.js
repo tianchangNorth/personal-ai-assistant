@@ -87,7 +87,7 @@ class VectorService {
       }
 
       console.log(`💡 请确保模型文件已下载到: ${modelCacheDir}`);
-      console.log('💡 运行 "npm run download-model-simple" 下载PyTorch模型');
+      console.log('💡 运行 "npm run custom-model download Xenova/bge-small-zh-v1.5" 下载PyTorch模型');
       throw new Error('本地模型文件不存在或损坏');
     }
   }

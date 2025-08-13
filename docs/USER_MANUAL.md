@@ -59,6 +59,9 @@ npm run custom-model list
 
 # 下载其他模型（可选）
 npm run custom-model download Xenova/bge-base-zh-v1.5
+
+# 下载备份模型（轻量级）
+npm run download-backup
 ```
 
 ### 5. 启动服务
@@ -162,7 +165,7 @@ npm start
 # 查看所有可用模型
 npm run custom-model list
 
-# 下载新模型
+# 下载指定模型
 npm run custom-model download Xenova/bge-base-zh-v1.5
 
 # 检查模型状态
@@ -171,7 +174,10 @@ npm run custom-model check Xenova/bge-base-zh-v1.5
 # 设置为默认模型
 npm run custom-model set-default Xenova/bge-base-zh-v1.5
 
-# 查看帮助信息
+# 自动设置默认模型（单个模型时）
+npm run custom-model auto-set
+
+# 显示帮助信息
 npm run custom-model help
 ```
 
@@ -218,6 +224,9 @@ npm run custom-model auto-set
 
 # 下载模型后自动设置（无需手动操作）
 npm run custom-model download Xenova/bge-base-zh-v1.5
+
+# 查看所有模型状态
+npm run custom-model list
 ```
 
 **优势**：
@@ -367,7 +376,8 @@ LLM_MODEL=ernie-speed-128k
 
 **解决方案**:
 - 检查网络连接
-- 使用 `npm run download-backup` 下载备份模型
+- 使用 `npm run download-backup` 下载轻量级备份模型
+- 使用 `npm run custom-model download Xenova/all-MiniLM-L6-v2` 下载其他可用模型
 - 手动下载模型文件到 `models/` 目录
 - 确保有足够的磁盘空间（至少200MB）
 
@@ -379,6 +389,9 @@ LLM_MODEL=ernie-speed-128k
 ```bash
 # 检查模型状态
 npm run custom-model check your-model-name
+
+# 查看所有可用模型
+npm run custom-model list
 
 # 清理缓存并重新下载
 rm -rf ./models/cache/*
@@ -537,6 +550,9 @@ npm install
 
 # 重新下载模型（如有更新）
 npm run download-model
+
+# 检查模型状态
+npm run custom-model list
 ```
 
 ---

@@ -73,11 +73,6 @@ wecombot/
 - 数据验证 (joi)
 - 安全中间件 (helmet, cors)
 
-**前端**:
-- Vue.js 3
-- Element Plus
-- Vite构建工具
-
 ## 📦 安装部署
 
 ### 环境要求
@@ -91,7 +86,7 @@ wecombot/
 1. 克隆项目
 ```bash
 git clone <repository-url>
-cd wecombot
+cd project-name
 ```
 
 2. 安装依赖
@@ -128,11 +123,17 @@ npm start
 ### 模型管理
 
 ```bash
-# 检查模型状态
-npm run check-all-models
+# 查看所有可用模型
+npm run custom-model list
 
-# 下载备份模型
-npm run download-backup
+# 下载默认模型
+npm run download-model
+
+# 下载备份模型（轻量级）
+pm run download-backup
+
+# 检查默认模型状态
+npm run check-model
 
 # 一键安装
 npm run setup
@@ -156,10 +157,10 @@ npm run setup
 ### 模型管理命令
 
 ```bash
-# 查看可用模型
+# 查看所有可用模型
 npm run custom-model list
 
-# 下载新模型
+# 下载指定模型
 npm run custom-model download Xenova/bge-base-zh-v1.5
 
 # 设置为默认模型
@@ -167,6 +168,12 @@ npm run custom-model set-default Xenova/bge-base-zh-v1.5
 
 # 检查模型状态
 npm run custom-model check Xenova/bge-base-zh-v1.5
+
+# 自动设置默认模型（单个模型时）
+npm run custom-model auto-set
+
+# 显示帮助信息
+npm run custom-model help
 ```
 
 ### 模型选择建议
@@ -175,7 +182,7 @@ npm run custom-model check Xenova/bge-base-zh-v1.5
 - **多语言场景**: `Xenova/all-MiniLM-L6-v2` 或 `Xenova/paraphrase-multilingual-MiniLM-L12-v2`
 - **英文场景**: `Xenova/e5-small-v2` 或 `Xenova/e5-base-v2`
 
-**注意**: 切换模型后需要重建向量索引，系统会自动检测模型维度。
+**注意**: 切换模型后需要重建向量索引，系统会自动检测模型维度。当系统中只有一个向量模型时，系统会自动将其设置为默认模型。
 
 ## 🗄️ 向量数据库管理
 

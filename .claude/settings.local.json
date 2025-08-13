@@ -17,7 +17,8 @@
       "Bash(mv:*)",
       "Bash(cp:*)",
       "Bash(xcopy:*)",
-      "Bash(npm run custom-model:*)"
+      "Bash(npm run custom-model:*)",
+      "Bash(npm run check-model:*)"
     ],
     "deny": []
   }
