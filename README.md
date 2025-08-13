@@ -15,7 +15,6 @@
 - 🎯 增强的RAG提示词构建
 - 📈 查询历史记录管理
 - 🛠️ 权限配置管理
-- 🎛️ **多向量数据库支持**（Memory、FAISS、Redis、PostgreSQL）
 - 🔧 **自定义向量模型支持**（7+种推荐模型，一键切换）
 
 ## 📁 项目结构
@@ -66,7 +65,6 @@ wecombot/
 **后端**:
 - Node.js + Express
 - SQLite数据库
-- **多向量数据库支持**（Memory、FAISS、Redis、PostgreSQL+pgvector）
 - **可扩展向量模型**（支持Transformers.js兼容模型）
 - BGE中文向量模型 (@xenova/transformers)
 - llama.cpp + Qwen模型
