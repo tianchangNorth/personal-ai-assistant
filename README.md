@@ -106,12 +106,7 @@ cp .env.example .env
 npm run download-model
 ```
 
-5. 初始化数据库
-```bash
-npm run init:db
-```
-
-6. 启动服务
+5. 启动服务
 ```bash
 # 开发模式
 npm run dev
