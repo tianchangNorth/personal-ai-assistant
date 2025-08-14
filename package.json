@@ -6,8 +6,6 @@
   "scripts": {
     "start": "node src/app.js",
     "dev": "nodemon src/app.js",
-    "test": "jest",
-    "test:watch": "jest --watch",
     "build": "npm run build:frontend",
     "build:frontend": "cd frontend && npm run build",
     "download-model": "node scripts/custom-model-manager.js download Xenova/bge-small-zh-v1.5",
