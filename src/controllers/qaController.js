@@ -42,7 +42,9 @@ class QAController {
 
       res.json({
         success: true,
-        data: result
+        answer: result.answer,
+        sources: result.sources,
+        queryInfo: result.queryInfo
       });
 
     } catch (error) {

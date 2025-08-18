@@ -23,9 +23,9 @@ const config = {
 
   // 向量模型配置
   vector: {
-    modelPath: process.env.VECTOR_MODEL_PATH || path.join(__dirname, '../../models/bge-small-zh-v1.5'),
-    dimension: parseInt(process.env.VECTOR_DIMENSION) || 512,
-    faissIndexPath: process.env.FAISS_INDEX_PATH || path.join(__dirname, '../../data/vectors/vector_data.json')
+    modelPath: process.env.VECTOR_MODEL_PATH || path.join(__dirname, '../../models/cache/Xenova/bge-small-zh-v1.5'),
+    dimension: parseInt(process.env.VECTOR_DIMENSION) || 3072,
+    faissIndexPath: process.env.FAISS_INDEX_PATH || path.join(__dirname, '../../data/vectors/faiss_index.bin')
   },
 
   // LLM配置

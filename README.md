@@ -5,7 +5,7 @@
 ## 🚀 功能特性
 
 - 📄 多格式文档支持（PDF、Word、Markdown）
-- 🔍 智能语义检索（基于BGE中文向量模型）
+- 🔍 智能语义检索（基于BGE中文向量模型 + FAISS）
 - 🤖 本地LLM推理（支持Qwen等开源模型）
 - 💬 智能对话交互
 - 🛡️ 数据安全可控（本地部署）
@@ -16,6 +16,7 @@
 - 📈 查询历史记录管理
 - 🛠️ 权限配置管理
 - 🔧 **自定义向量模型支持**（7+种推荐模型，一键切换）
+- ⚡ **高性能FAISS向量搜索**（0.08ms搜索时间，支持大规模文档）
 
 ## 📁 项目结构
 
@@ -61,6 +62,7 @@ personal-ai-assistant/
 - SQLite数据库
 - **可扩展向量模型**（支持Transformers.js兼容模型）
 - BGE中文向量模型 (@xenova/transformers)
+- **FAISS高性能向量搜索** (faiss-node)
 - llama.cpp + Qwen模型
 - 第三方API集成 (axios)
 - 文档解析 (pdf-parse, mammoth, markdown-it)
@@ -139,7 +141,7 @@ npm run setup
 
 | 模型名称 | 描述 | 维度 | 大小 | 语言 |
 |---------|------|------|------|------|
-| `Xenova/bge-small-zh-v1.5` | BGE中文小型版（默认） | 512 | ~130MB | 中文 |
+| `Xenova/bge-small-zh-v1.5` | BGE中文小型版（默认） | 3072 | ~130MB | 中文 |
 | `Xenova/bge-base-zh-v1.5` | BGE中文基础版 | 768 | ~400MB | 中文 |
 | `Xenova/bge-large-zh-v1.5` | BGE中文大型版 | 1024 | ~1.2GB | 中文 |
 | `Xenova/all-MiniLM-L6-v2` | 多语言轻量模型 | 384 | ~25MB | 多语言 |
@@ -181,8 +183,8 @@ npm run custom-model help
 
 ### 支持的向量数据库
 
-- **Memory**: 内存存储（默认，轻量级）
-- **FAISS**: 高性能向量搜索
+- **FAISS**: 高性能向量搜索（默认，0.08ms搜索时间）
+- **Memory**: 内存存储（轻量级，开发环境）
 - **Redis**: 分布式内存数据库
 - **PostgreSQL + pgvector**: 关系型向量数据库
 

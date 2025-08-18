@@ -25,7 +25,18 @@ class App {
    */
   setupMiddleware() {
     // 安全中间件
-    this.app.use(helmet());
+    this.app.use(helmet({
+      contentSecurityPolicy: {
+        directives: {
+          defaultSrc: ["'self'"],
+          styleSrc: ["'self'", "'unsafe-inline'"],
+          scriptSrc: ["'self'", "'unsafe-inline'"],
+          scriptSrcAttr: ["'unsafe-inline'"],
+          imgSrc: ["'self'", "data:", "https:"],
+          connectSrc: ["'self'", "http://localhost:3000", "https://localhost:3000"]
+        }
+      }
+    }));
     
     // CORS配置
     this.app.use(cors({
@@ -44,6 +55,7 @@ class App {
 
     // 静态文件服务
     this.app.use('/uploads', express.static(config.upload.dir));
+    this.app.use(express.static(path.join(__dirname, '../public')));
     
     // 健康检查
     this.app.get('/health', (req, res) => {
@@ -66,18 +78,9 @@ class App {
     this.app.use('/api/docs', docsRoutes);
     this.app.use('/api/qa', qaRoutes);
 
-    // 根路径
+    // 根路径 - 返回前端页面
     this.app.get('/', (req, res) => {
-      res.json({
-        message: '个人AI助手 API',
-        version: '1.0.0',
-        docs: {
-          interactive: '/api/docs/interactive',
-          markdown: '/api/docs/markdown',
-          json: '/api/docs/json'
-        },
-        health: '/health'
-      });
+      res.sendFile(path.join(__dirname, '../public/index.html'));
     });
 
     // API文档路由（简单版本）
