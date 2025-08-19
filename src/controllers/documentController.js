@@ -6,6 +6,25 @@ const documentModel = require('../models/documentModel');
 const semanticSearchService = require('../services/semanticSearchService');
 const config = require('../config');
 
+// 处理文件名编码问题
+function normalizeFilename(originalname) {
+  try {
+    // 尝试将文件名转换为UTF-8
+    const buffer = Buffer.from(originalname, 'latin1');
+    const decoded = buffer.toString('utf8');
+    
+    // 检查转换后的文件名是否包含乱码字符
+    if (decoded.includes('�') || decoded.includes('â')) {
+      return originalname;
+    }
+    
+    return decoded;
+  } catch (error) {
+    console.warn('文件名编码转换失败，使用原始文件名:', error.message);
+    return originalname;
+  }
+}
+
 class DocumentController {
   constructor() {
     this.parser = new DocumentParser();
@@ -32,6 +51,7 @@ class DocumentController {
       }
 
       const file = req.file;
+      const normalizedOriginalname = normalizeFilename(file.originalname);
       const metadata = {
         uploadedBy: req.body.uploadedBy || 'anonymous',
         description: req.body.description || '',
@@ -41,9 +61,9 @@ class DocumentController {
       // 保存文档记录到数据库
       const documentId = await documentModel.createDocument({
         filename: file.filename,
-        originalName: file.originalname,
+        originalName: normalizedOriginalname,
         filePath: file.path,
-        fileType: path.extname(file.originalname).toLowerCase(),
+        fileType: path.extname(normalizedOriginalname).toLowerCase(),
         fileSize: file.size,
         mimeType: file.mimetype,
         metadata
@@ -57,9 +77,9 @@ class DocumentController {
         message: '文档上传成功，正在处理中',
         data: {
           documentId,
-          filename: file.originalname,
+          filename: normalizedOriginalname,
           size: file.size,
-          type: path.extname(file.originalname).toLowerCase()
+          type: path.extname(normalizedOriginalname).toLowerCase()
         }
       });
     } catch (error) {

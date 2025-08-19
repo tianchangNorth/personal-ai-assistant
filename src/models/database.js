@@ -24,6 +24,10 @@ class Database {
       // 启用外键约束
       await this.run('PRAGMA foreign_keys = ON');
       
+      // 设置UTF-8编码
+      await this.run('PRAGMA encoding = "UTF-8"');
+      await this.run('PRAGMA journal_mode = WAL');
+      
       // 创建表结构
       await this.createTables();
       

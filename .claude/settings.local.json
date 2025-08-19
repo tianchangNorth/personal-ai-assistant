@@ -22,7 +22,9 @@
       "WebSearch",
       "WebSearch",
       "Bash(npm start:*)",
-      "Bash(taskkill:*)"
+      "Bash(taskkill:*)",
+      "Bash(dir:*)",
+      "Bash(powershell:*)"
     ],
     "deny": []
   }

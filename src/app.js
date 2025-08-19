@@ -53,6 +53,19 @@ class App {
     this.app.use(express.json({ limit: '10mb' }));
     this.app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
+    // 设置字符集处理中间件，确保正确处理中文文件名
+    this.app.use((req, res, next) => {
+      // 设置响应字符集
+      res.setHeader('Content-Type', 'application/json; charset=utf-8');
+      
+      // 对于multipart/form-data请求，确保正确处理字符编码
+      if (req.is('multipart/form-data')) {
+        req.headers['content-type'] = req.headers['content-type'] + '; charset=utf-8';
+      }
+      
+      next();
+    });
+
     // 静态文件服务
     this.app.use('/uploads', express.static(config.upload.dir));
     this.app.use(express.static(path.join(__dirname, '../public')));

@@ -3,6 +3,25 @@ const path = require('path');
 const fs = require('fs').promises;
 const config = require('../config');
 
+// 处理文件名编码问题
+function normalizeFilename(originalname) {
+  try {
+    // 尝试将文件名转换为UTF-8
+    const buffer = Buffer.from(originalname, 'latin1');
+    const decoded = buffer.toString('utf8');
+    
+    // 检查转换后的文件名是否包含乱码字符
+    if (decoded.includes('�') || decoded.includes('â')) {
+      return originalname;
+    }
+    
+    return decoded;
+  } catch (error) {
+    console.warn('文件名编码转换失败，使用原始文件名:', error.message);
+    return originalname;
+  }
+}
+
 // 确保上传目录存在
 async function ensureUploadDir() {
   try {
@@ -21,16 +40,18 @@ const storage = multer.diskStorage({
   filename: (req, file, cb) => {
     // 生成唯一文件名
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    const ext = path.extname(file.originalname);
-    const name = path.basename(file.originalname, ext);
-    const filename = `${name}-${uniqueSuffix}${ext}`;
+    const normalizedOriginalname = normalizeFilename(file.originalname);
+    const ext = path.extname(normalizedOriginalname);
+    const name = path.basename(normalizedOriginalname, ext);
+    const filename = `${name}${ext}`;
     cb(null, filename);
   }
 });
 
 // 文件过滤器
 const fileFilter = (req, file, cb) => {
-  const ext = path.extname(file.originalname).toLowerCase().substring(1);
+  const normalizedOriginalname = normalizeFilename(file.originalname);
+  const ext = path.extname(normalizedOriginalname).toLowerCase().substring(1);
 
   if (config.upload.allowedTypes.includes(ext)) {
     cb(null, true);
