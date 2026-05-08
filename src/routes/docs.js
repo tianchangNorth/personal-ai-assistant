@@ -689,7 +689,7 @@ router.get('/json', (req, res) => {
   const apiSpec = {
     openapi: '3.0.0',
     info: {
-      title: 'Personal AI Assistant API',
+      title: 'Athena API',
       version: '1.0.0',
       description: '个人AI助手API',
       contact: {

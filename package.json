@@ -1,5 +1,5 @@
 {
-  "name": "personal-ai-assistant",
+  "name": "athena",
   "version": "1.0.0",
   "description": "个人AI助手 - 基于文档智能问答的AI助手",
   "main": "src/app.js",
@@ -35,7 +35,6 @@
     "mammoth": "^1.6.0",
     "markdown-it": "^14.0.0",
     "sqlite3": "^5.1.6",
-
     "axios": "^1.6.2",
     "@xenova/transformers": "^2.17.1",
     "faiss-node": "^0.5.1",

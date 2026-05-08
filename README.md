@@ -21,7 +21,7 @@
 ## 📁 项目结构
 
 ```
-personal-ai-assistant/
+athena/
 ├── src/                    # 后端源码
 │   ├── app.js             # 应用入口
 │   ├── config/            # 配置文件
@@ -82,8 +82,8 @@ personal-ai-assistant/
 
 1. 克隆项目
 ```bash
-git clone https://github.com/tianchangNorth/personal-ai-assistant
-cd personal-ai-assistant
+git clone https://github.com/tianchangNorth/athena
+cd athena
 ```
 
 2. 安装依赖

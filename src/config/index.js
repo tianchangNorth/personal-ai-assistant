@@ -11,7 +11,7 @@ const config = {
 
   // 数据库配置
   database: {
-    path: process.env.DB_PATH || path.join(__dirname, '../../data/database/personal-ai-assistant.db')
+    path: process.env.DB_PATH || path.join(__dirname, '../../data/database/athena.db')
   },
 
   // 文件上传配置
@@ -39,7 +39,7 @@ const config = {
   // 日志配置
   logging: {
     level: process.env.LOG_LEVEL || 'info',
-    file: process.env.LOG_FILE || path.join(__dirname, '../../logs/personal-ai-assistant.log')
+    file: process.env.LOG_FILE || path.join(__dirname, '../../logs/athena.log')
   },
 
   // 文本处理配置

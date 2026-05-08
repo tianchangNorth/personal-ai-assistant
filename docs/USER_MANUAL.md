@@ -32,7 +32,7 @@
 
 ```bash
 git clone <repository-url>
-cd personal-ai-assistant
+cd athena
 ```
 
 ### 2. 安装依赖
@@ -296,7 +296,7 @@ PORT=3000
 NODE_ENV=development
 
 # 数据库配置
-DB_PATH=./data/database/personal-ai-assistant.db
+DB_PATH=./data/database/athena.db
 
 # 文件存储配置
 UPLOAD_DIR=./uploads
@@ -315,7 +315,7 @@ LLM_TEMPERATURE=0.7
 
 # 日志配置
 LOG_LEVEL=info
-LOG_FILE=./logs/personal-ai-assistant.log
+LOG_FILE=./logs/athena.log
 
 # 文本处理配置
 CHUNK_SIZE=300
@@ -434,7 +434,7 @@ export HTTPS_PROXY=http://proxy:port
 **解决方案**:
 - 检查文件格式是否支持
 - 确认文件大小不超过10MB
-- 查看日志文件 `logs/personal-ai-assistant.log` 了解详细错误
+- 查看日志文件 `logs/athena.log` 了解详细错误
 
 #### 4. 回答质量不佳
 
@@ -463,20 +463,20 @@ export HTTPS_PROXY=http://proxy:port
 
 ```bash
 # 查看实时日志
-tail -f logs/personal-ai-assistant.log
+tail -f logs/athena.log
 
 # 查看错误日志
-grep "ERROR" logs/personal-ai-assistant.log
+grep "ERROR" logs/athena.log
 ```
 
 ### 数据库管理
 
 ```bash
 # 备份数据库
-cp data/database/personal-ai-assistant.db backup/personal-ai-assistant-$(date +%Y%m%d).db
+cp data/database/athena.db backup/athena-$(date +%Y%m%d).db
 
 # 重置数据库（谨慎操作）
-rm data/database/personal-ai-assistant.db
+rm data/database/athena.db
 npm run init:db
 ```
 
@@ -513,7 +513,7 @@ A:
 ### Q: 如何备份数据？
 
 A: 
-- 备份数据库文件：`data/database/personal-ai-assistant.db`
+- 备份数据库文件：`data/database/athena.db`
 - 备份上传的文档：`uploads/` 目录
 - 备份向量索引：`data/vectors/` 目录
 
