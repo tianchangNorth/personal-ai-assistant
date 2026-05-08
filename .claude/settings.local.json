@@ -24,7 +24,8 @@
       "Bash(npm start:*)",
       "Bash(taskkill:*)",
       "Bash(dir:*)",
-      "Bash(powershell:*)"
+      "Bash(powershell:*)",
+      "Bash(git commit *)"
     ],
     "deny": []
   }
